@@ -1,20 +1,39 @@
 ﻿using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using System.Collections;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
 public class StarMesh : MonoBehaviour
 {
-    [ContextMenu("Generate Mesh")]
-    void GenerateMesh()
+    public Material Material;
+#if UNITY_EDITOR
+    [MenuItem("Ryyyyymd/Create Stars")]
+    static void CreateStars()
     {
-        int starCount = 14000;
+        Object[] starMeshes = Object.FindObjectsOfType(typeof(StarMesh));
+        foreach (var starMesh in starMeshes)
+        {
+            DestroyImmediate((starMesh as StarMesh).gameObject);
+        }
 
         Star[] stars = LoadStars.Load();
-        Vector3[] starVectors = new Vector3[starCount];
-        for (int i = 0; i < starCount; i++)
+        int maxStarsPerMesh = 15000;
+        for (int i = 0; i < stars.Length; i+=maxStarsPerMesh)
         {
-            starVectors[i] = new Vector3(stars[i].X, stars[i].Y, stars[i].Z);
+            GenerateMesh(stars, i, Mathf.Min(maxStarsPerMesh, stars.Length - i));
+        }
+    }
+#endif
+
+    static void GenerateMesh(Star[] stars, int offset, int count)
+    {
+        Vector3[] starVectors = new Vector3[count];
+        for (int i = 0; i < count; i++)
+        {
+            starVectors[i] = new Vector3(stars[i + offset].X, stars[i + offset].Y, stars[i + offset].Z);
             //starVectors[i] = Random.onUnitSphere * Random.Range(-10000, 10000);
         }
 
@@ -56,8 +75,13 @@ public class StarMesh : MonoBehaviour
         mesh.uv = uvs;
         mesh.triangles = triangles;
         mesh.name = "starMesh";
+        mesh.RecalculateBounds();
 
-        MeshFilter meshFilter = GetComponent<MeshFilter>();
+        GameObject go = new GameObject("starMesh");
+        StarMesh starMesh = go.AddComponent<StarMesh>();
+        MeshFilter meshFilter = go.GetComponent<MeshFilter>();
+        MeshRenderer meshRenderer = go.GetComponent<MeshRenderer>();
         meshFilter.sharedMesh = mesh;
+        meshRenderer.sharedMaterial = starMesh.Material;
     }
 }

@@ -20,7 +20,7 @@
 			{
 				v2f o;
 				o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
-				o.pos += mul(UNITY_MATRIX_P, v.texcoord * 1);
+				o.pos += mul(UNITY_MATRIX_P, v.texcoord * 0.1);
 				o.texcoord = v.texcoord;
 				return o;
 			}
