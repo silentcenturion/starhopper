@@ -16,13 +16,13 @@ public class OrbitCamera : MonoBehaviour
     public bool orbitActive;
 
     public Vector3 targetPosition;
-    public float distance = 5.0f;
     public float xSpeed = 120.0f;
     public float ySpeed = 120.0f;
 
     public float yMinLimit = -20f;
     public float yMaxLimit = 80f;
 
+    public float currentZoom = 50.0f;
     public float zoomSpeed = 5;
     public float zoomDistanceMin = 0.5f;
     public float zoomDistanceMax = 200;
@@ -46,10 +46,6 @@ public class OrbitCamera : MonoBehaviour
 
         if (Input.GetKey(KeyCode.KeypadMinus))
             Scaler.Scale -= 0.1f;
-
-
-        if (Input.GetKeyDown(KeyCode.Return))
-            OrbitLocation(default(Star));
 
         if (Input.GetKey(KeyCode.Mouse1))
         {
@@ -84,7 +80,7 @@ public class OrbitCamera : MonoBehaviour
             if (Input.GetKey(KeyCode.E))
                 transform.Translate(0, speed, 0);
 
-            targetPosition = transform.position + transform.forward * distance;
+            targetPosition = transform.position + transform.forward * currentZoom;
             x = transform.eulerAngles.y;
             y = transform.eulerAngles.x;
             z = transform.eulerAngles.z;
@@ -116,9 +112,9 @@ public class OrbitCamera : MonoBehaviour
 
             Quaternion rotation = Quaternion.Euler(y, x, z);
 
-            distance = Mathf.Clamp(distance - Input.GetAxis("Mouse ScrollWheel") * zoomSpeed, zoomDistanceMin, zoomDistanceMax);
+            currentZoom = Mathf.Clamp(currentZoom - Input.GetAxis("Mouse ScrollWheel") * zoomSpeed, zoomDistanceMin, zoomDistanceMax);
 
-            Vector3 negDistance = new Vector3(0.0f, 0.0f, -distance);
+            Vector3 negDistance = new Vector3(0.0f, 0.0f, -currentZoom);
             Vector3 position = rotation * negDistance + targetPosition * Scaler.Scale;
 
             currentTravelTime += Time.deltaTime;

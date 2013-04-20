@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Scaler : MonoBehaviour
 {
-    public static float Scale = 1f;
+    public static float Scale = 150f;
 
     void Update()
     {
