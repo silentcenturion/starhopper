@@ -18,31 +18,43 @@ public static class LoadExoplanet
         Dictionary<int, List<int>> planetsByHDID = new Dictionary<int, List<int>>();
         Dictionary<int, List<int>> planetsByHiPID = new Dictionary<int, List<int>>();
         Dictionary<int, List<int>> planetsByHDR = new Dictionary<int, List<int>>();
-        
-        for(int i= 0; i<exoplanets.Length;i++)
+
+        for (int i = 0; i < exoplanets.Length; i++)
         {
             Exoplanet exoplanet = exoplanets[i];
             if (exoplanet.SystemName.StartsWith("HD"))
             {
                 string id = exoplanet.SystemName.Substring(3);
+
+                // remove extra chars after hdID like 'A' and 'B'
+                int spaceingIndex = id.IndexOf(' ');
+                if (spaceingIndex > 0)
+                    id = id.Remove(spaceingIndex);
+
                 int hdID;
                 if (int.TryParse(id, out hdID) == false)
+                {
+                    UnityEngine.Debug.Log("failed to parse hdID: " + id);
                     continue;
+                }
 
-                if (! planetsByHDID.ContainsKey(hdID))
+                if (!planetsByHDID.ContainsKey(hdID))
                 {
                     planetsByHDID[hdID] = new List<int>();
                 }
                 planetsByHDID[hdID].Add(i);
             }
-            else if(exoplanet.SystemName.StartsWith("HIP"))
+            else if (exoplanet.SystemName.StartsWith("HIP"))
             {
                 string id = exoplanet.SystemName.Substring(4);
                 int hipID;
                 if (int.TryParse(id, out hipID) == false)
+                {
+                    UnityEngine.Debug.Log("failed to parse hipID: " + id);
                     continue;
+                }
 
-                if (! planetsByHiPID.ContainsKey(hipID))
+                if (!planetsByHiPID.ContainsKey(hipID))
                 {
                     planetsByHiPID[hipID] = new List<int>();
                 }
@@ -53,16 +65,25 @@ public static class LoadExoplanet
                 string id = exoplanet.SystemName.Substring(3);
                 int hrID;
                 if (int.TryParse(id, out hrID) == false)
+                {
+                    UnityEngine.Debug.Log("failed to parse hrID: " + id);
                     continue;
+                }
 
-                if (! planetsByHDR.ContainsKey(hrID))
+                if (!planetsByHDR.ContainsKey(hrID))
                 {
                     planetsByHDR[hrID] = new List<int>();
                 }
                 planetsByHDR[hrID].Add(i);
             }
         }
-        
+
+        UnityEngine.Debug.Log("planetsByHDID: " + planetsByHDID.Count);
+        UnityEngine.Debug.Log("planetsByHiPID: " + planetsByHiPID.Count);
+        UnityEngine.Debug.Log("planetsByHDR: " + planetsByHDR.Count);
+
+        int planetsWithStars = 0;
+
         Dictionary<int, List<Exoplanet>> starMap = new Dictionary<int, List<Exoplanet>>();
         foreach (Star star in stars)
         {
@@ -74,6 +95,7 @@ public static class LoadExoplanet
                     foreach (int planetID in planets)
                     {
                         star.Planets.Add(exoplanets[planetID]);
+                        planetsWithStars++;
                     }
                 }
             }
@@ -85,10 +107,11 @@ public static class LoadExoplanet
                     foreach (int planetID in planets)
                     {
                         star.Planets.Add(exoplanets[planetID]);
+                        planetsWithStars++;
                     }
                 }
 
-            } 
+            }
             if (star.HR != 0)
             {
                 List<int> planets;
@@ -97,11 +120,14 @@ public static class LoadExoplanet
                     foreach (int planetID in planets)
                     {
                         star.Planets.Add(exoplanets[planetID]);
+                        planetsWithStars++;
                     }
                 }
 
             }
         }
+
+        UnityEngine.Debug.Log("planets with stars: " + planetsWithStars);
     }
 
     public static Exoplanet[] LoadExoplanets(Star[] stars)
