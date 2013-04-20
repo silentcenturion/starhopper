@@ -2,77 +2,114 @@
 using System.IO;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 public static class LoadExoplanet
 {
-    public static Dictionary<int, List<Exoplanet>> Load(Star[] stars)
+    public static void Load(Star[] stars)
     {
-        Exoplanet[] exoplanets = LoadExoplanets(stars);
-        Dictionary<int, List<Exoplanet>> star_map = new Dictionary<int, List<Exoplanet>>();
+        Stopwatch sw = new Stopwatch();
 
-        foreach (Exoplanet exoplanet in exoplanets)
+        sw.Start();
+
+        UnityEngine.Debug.Log(sw.Elapsed.TotalMilliseconds);
+
+        Exoplanet[] exoplanets = LoadExoplanets(stars);
+        Dictionary<int, List<int>> planetsByHDID = new Dictionary<int, List<int>>();
+        Dictionary<int, List<int>> planetsByHiPID = new Dictionary<int, List<int>>();
+        Dictionary<int, List<int>> planetsByHDR = new Dictionary<int, List<int>>();
+        
+        for(int i= 0; i<exoplanets.Length;i++)
         {
+            Exoplanet exoplanet = exoplanets[i];
             if (exoplanet.SystemName.StartsWith("HD"))
             {
-                string hdID = exoplanet.SystemName.Substring(3);
-                foreach (Star star in stars)
+                string id = exoplanet.SystemName.Substring(3);
+                int hdID;
+                if (int.TryParse(id, out hdID) == false)
+                    continue;
+
+                if (! planetsByHDID.ContainsKey(hdID))
                 {
-                    if (star.HD.ToString() == hdID)
-                    {
-                        if (!star_map.ContainsKey(star.StarID))
-                        {
-                            star_map[star.StarID] = new List<Exoplanet>();
-                        }
-                        star_map[star.StarID].Add(exoplanet);
-                        break;
-                    }
+                    planetsByHDID[hdID] = new List<int>();
                 }
+                planetsByHDID[hdID].Add(i);
             }
-
-            if (exoplanet.SystemName.StartsWith("HIP"))
+            else if(exoplanet.SystemName.StartsWith("HIP"))
             {
-                string hipID = exoplanet.SystemName.Substring(4);
-                foreach (Star star in stars)
-                {
-                    if (star.HIP.ToString() == hipID)
-                    {
-                        if (!star_map.ContainsKey(star.StarID))
-                        {
-                            star_map[star.StarID] = new List<Exoplanet>();
-                        }
-                        star_map[star.StarID].Add(exoplanet);
+                string id = exoplanet.SystemName.Substring(4);
+                int hipID;
+                if (int.TryParse(id, out hipID) == false)
+                    continue;
 
-                        break;
-                    }
+                if (! planetsByHiPID.ContainsKey(hipID))
+                {
+                    planetsByHiPID[hipID] = new List<int>();
                 }
+                planetsByHiPID[hipID].Add(i);
             }
-
-            if (exoplanet.SystemName.StartsWith("HR"))
+            else if (exoplanet.SystemName.StartsWith("HR"))
             {
-                string hrID = exoplanet.SystemName.Substring(3);
-                foreach (Star star in stars)
+                string id = exoplanet.SystemName.Substring(3);
+                int hrID;
+                if (int.TryParse(id, out hrID) == false)
+                    continue;
+
+                if (! planetsByHDR.ContainsKey(hrID))
                 {
-                    if (star.HR.ToString() == hrID)
-                    {
-                        if (!star_map.ContainsKey(star.StarID))
-                        {
-                            star_map[star.StarID] = new List<Exoplanet>();
-                        }
-                        star_map[star.StarID].Add(exoplanet);
-                        break;
-                    }
+                    planetsByHDR[hrID] = new List<int>();
                 }
+                planetsByHDR[hrID].Add(i);
             }
         }
-        return star_map;
+        
+        Dictionary<int, List<Exoplanet>> starMap = new Dictionary<int, List<Exoplanet>>();
+        foreach (Star star in stars)
+        {
+            if (star.HD != 0)
+            {
+                List<int> planets;
+                if (planetsByHiPID.TryGetValue(star.HD, out planets))
+                {
+                    foreach (int planetID in planets)
+                    {
+                        star.Planets.Add(exoplanets[planetID]);
+                    }
+                }
+            }
+            if (star.HIP != 0)
+            {
+                List<int> planets;
+                if (planetsByHDID.TryGetValue(star.HIP, out planets))
+                {
+                    foreach (int planetID in planets)
+                    {
+                        star.Planets.Add(exoplanets[planetID]);
+                    }
+                }
+
+            } 
+            if (star.HR != 0)
+            {
+                List<int> planets;
+                if (planetsByHDR.TryGetValue(star.HR, out planets))
+                {
+                    foreach (int planetID in planets)
+                    {
+                        star.Planets.Add(exoplanets[planetID]);
+                    }
+                }
+
+            }
+        }
     }
 
     public static Exoplanet[] LoadExoplanets(Star[] stars)
     {
         Exoplanet[] exoplanets = new Exoplanet[10000];
         Dictionary<string, int> labels;
-	
-	    StreamReader sr = new StreamReader("exoplanets.csv");
+
+        StreamReader sr = new StreamReader("exoplanets.csv");
 
         // The first line has captions about the data...
         labels = ParseLabels(sr.ReadLine());
@@ -98,12 +135,12 @@ public static class LoadExoplanet
         int current_label = 0;
         Dictionary<string, int> labels = new Dictionary<string, int>();
 
-	    string[] words = data.Split(',');
-	    foreach (string word in words)
-	    {
+        string[] words = data.Split(',');
+        foreach (string word in words)
+        {
             labels.Add(word.Trim(), current_label);
             current_label++;
-	    }
+        }
         return labels;
     }
 
