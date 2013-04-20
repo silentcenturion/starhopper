@@ -12,6 +12,10 @@ public class GUIManager : MonoBehaviour {
 	float _HeaderAlpha;
 	bool _HeaderUp = true;
 	string _FocusedStarName;
+	string _Distance;
+	string _Magnitude;
+	string _Spectrum;
+	string _ColorIndex;
 	
 	void Start()
 	{
@@ -84,13 +88,13 @@ public class GUIManager : MonoBehaviour {
 		GUIStyle informationStyle = new GUIStyle();
 		informationStyle.fontSize = 40;
 		informationStyle.normal.textColor = new Color(255,255,255,_HeaderAlpha);
-		GUI.Label(new Rect(15, Screen.height * 0.3f, 100, 25), "Magnitude: 5134", informationStyle);
-		GUI.Label(new Rect(15, Screen.height * 0.3f + 40, 100, 25), "Magnitude: 5134", informationStyle);
-		GUI.Label(new Rect(15, Screen.height * 0.3f + 80, 100, 25), "Magnitude: 5134", informationStyle);
-		GUI.Label(new Rect(15, Screen.height * 0.3f + 120, 100, 25), "Magnitude: 5134", informationStyle);
+		GUI.Label(new Rect(15, Screen.height * 0.3f, 100, 25), "Distance: "+_Distance, informationStyle);
+		GUI.Label(new Rect(15, Screen.height * 0.3f + 40, 100, 25), "Magnitude: "+_Magnitude, informationStyle);
+		GUI.Label(new Rect(15, Screen.height * 0.3f + 80, 100, 25), "Spectrum: "+_Spectrum, informationStyle);
+		GUI.Label(new Rect(15, Screen.height * 0.3f + 120, 100, 25), "Color Index: "+_ColorIndex, informationStyle);
 	}
 	
-	public void SetStarFocus(string starInFocus)
+	public void SetStarFocus(string starInFocus, string distance, string magnitude, string spectrum, string colorindex)
 	{
 		if( starInFocus == string.Empty || starInFocus == "" )
 			_HeaderUp = false;
@@ -98,6 +102,11 @@ public class GUIManager : MonoBehaviour {
 		{
 			_HeaderUp = true;
 			_FocusedStarName = starInFocus;
+			
+			_Distance = distance;
+			_Magnitude = magnitude;
+			_Spectrum = spectrum;
+			_ColorIndex = colorindex;
 		}
 	}
 	
