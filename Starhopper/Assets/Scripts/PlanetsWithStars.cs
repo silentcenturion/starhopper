@@ -4,19 +4,30 @@ using System.Collections.Generic;
 
 public class PlanetsWithStars : MonoBehaviour
 {
+	struct NameData
+	{
+		public Star Star;
+		public Vector2 ScreenPos;
+		public float Distance;
+	}
+	
 	public GUIManager guiManager;
+	
+	private List<NameData> _DataList;
 
     // Use this for initialization
     void Start()
     {
         LoadExoplanet.Load(StarPicker.Stars);
+		_DataList = new List<NameData>();
     }
-
-    void OnGUI()
-    {
+	
+	void Update()
+	{
 		if( guiManager.ShowPlanets() )
 		{
-			GUIStyle planetStyle = new GUIStyle();
+			_DataList.Clear();
+			
             Vector3 camPos = Camera.mainCamera.transform.position;
 			
 	        foreach (Star star in StarPicker.Stars)
@@ -34,18 +45,31 @@ public class PlanetsWithStars : MonoBehaviour
 	                if (screenPos3D.z < 0)
 	                    continue;
 	
-					
 	                float distance = Vector3.Distance(starPos, camPos);
 	                Vector2 screenPos = new Vector2(screenPos3D.x, screenPos3D.y);
 					
-					planetStyle.normal.textColor = new Color(255,255,255, 1 - (distance / guiManager.GetPlanetFilter()));
-					
-					if( planets.Count > 0 )
-                		GUI.Label(new Rect(screenPos.x, screenPos.y, 200, 100), star.GetName()+"(Planets: " + planets.Count+")", planetStyle);
-					else
-                		GUI.Label(new Rect(screenPos.x, screenPos.y, 200, 100), star.GetName(), planetStyle);
+					NameData newData = new NameData();
+					newData.ScreenPos = screenPos;
+					newData.Star = star;
+					newData.Distance = distance;
+					_DataList.Add(newData);
 	            }
 	        }
+		}
+	}
+
+    void OnGUI()
+    {
+		GUIStyle planetStyle = new GUIStyle();
+		foreach(NameData data in _DataList)
+		{
+			planetStyle.normal.textColor = new Color(255,255,255, 1 - (data.Distance / guiManager.GetPlanetFilter()));
+					
+			if( data.Star.Planets.Count > 0 )
+        		GUI.Label(new Rect(data.ScreenPos.x, data.ScreenPos.y, 200, 100), data.Star.GetName()+"(Planets: " + data.Star.Planets.Count+")", planetStyle);
+			else
+        		GUI.Label(new Rect(data.ScreenPos.x, data.ScreenPos.y, 200, 100), data.Star.GetName(), planetStyle);
+					
 		}
     }
 }
