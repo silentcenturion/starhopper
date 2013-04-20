@@ -11,4 +11,10 @@
 
     // ECC - Orbital Eccentricity
     public float OrbitalEccentricity;
+
+    // PER
+    public float OrbitalPeriod;
+
+    // R
+    public float PlanetaryRadius;
 }

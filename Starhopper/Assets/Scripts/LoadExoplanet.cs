@@ -177,6 +177,9 @@ public static class LoadExoplanet
         exoplanet.PlanetName = ParseString(data, labels["NAME"]);
         exoplanet.SemiMajorAxis = ParseFloat(data, labels["A"]);
         exoplanet.OrbitalEccentricity = ParseFloat(data, labels["ECC"]);
+        exoplanet.OrbitalPeriod = ParseFloat(data, labels["PER"]);
+        exoplanet.PlanetaryRadius = ParseFloat(data, labels["R"]);
+
         return exoplanet;
     }
 
