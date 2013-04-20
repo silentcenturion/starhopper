@@ -11,6 +11,7 @@ public class OrbitCamera : MonoBehaviour
 
     private float rotationCooldown;
     private float currentTravelTime;
+    private float targetTravelTime;
 
     public bool orbitActive;
 
@@ -98,9 +99,9 @@ public class OrbitCamera : MonoBehaviour
             float yDelta = Input.GetAxis("Mouse Y") * ySpeed * 0.02f;
             if (xDelta != 0 || yDelta != 0)
             {
-                rotationCooldown = 3;
-                x += xDelta;
-                y -= yDelta;
+                rotationCooldown = 0.5f;
+                //x += xDelta;
+                //y -= yDelta;
             }
 
             if (rotationCooldown > 0)
@@ -120,21 +121,33 @@ public class OrbitCamera : MonoBehaviour
             Vector3 negDistance = new Vector3(0.0f, 0.0f, -distance);
             Vector3 position = rotation * negDistance + targetPosition;
 
-            transform.rotation = rotation;
-
             currentTravelTime += Time.deltaTime;
 
-            float percent = currentTravelTime / 2f;
+            float percent = 1;
+            if (targetTravelTime > 0)
+                percent = currentTravelTime / targetTravelTime;
             if (percent > 1)
                 percent = 1;
             transform.position = Vector3.Slerp(transform.position, position, percent);
+            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, percent);
         }
     }
 
     public void OrbitLocation(Vector3 position)
     {
         currentTravelTime = 0;
-        targetPosition = position;
         orbitActive = true;
+        targetPosition = position;
+
+        Vector3 direction = targetPosition - Camera.mainCamera.transform.position;
+        float lengthToTargetPos = direction.magnitude;
+        direction.Normalize();
+
+        Quaternion rotation = Quaternion.LookRotation(direction);
+        x = rotation.eulerAngles.y;
+        y = rotation.eulerAngles.x;
+        z = rotation.eulerAngles.z;
+
+        targetTravelTime = lengthToTargetPos / 10 * Scaler.Scale;
     }
 }
