@@ -5,56 +5,76 @@ public class StarPicker : MonoBehaviour
 {
     private Star[] stars;
 
-    private OrbitCamera orbitCamera;
-
-    public static Star SelectedStar;
+    public GUIManager GuiManager;
+    public OrbitCamera OrbitCamera;
 
     // Use this for initialization
     void Start()
     {
-        orbitCamera = Camera.mainCamera.GetComponent<OrbitCamera>();
-
         stars = LoadStars.Load();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (GuiManager.IsMouseOverGui)
+            return;
+
+        if (Input.GetKeyDown(KeyCode.Mouse0) ||
+            Input.GetKeyDown(KeyCode.Mouse1))
         {
-            Vector3 camPos = Camera.mainCamera.transform.position;
-            Vector2 mousePos = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
-            float closestDistance = float.MaxValue;
-            Star closestStar = default(Star);
-            Vector3 closestStarPosition = Vector3.zero;
+            OrbitCamera.DeactivateOrbit();
+            GuiManager.HideStarFocus();
+        }
 
-            foreach (Star star in stars)
+        if (Input.GetKey(KeyCode.Mouse0))
+        {
+            Star closestStar;
+            if (PickStar(out closestStar))
             {
-                Vector3 starPos = new Vector3(star.X, star.Y, star.Z) * Scaler.Scale;
-                float distance3D = Vector3.SqrMagnitude(camPos - starPos);
-                if (distance3D < closestDistance &&
-                    distance3D < 400 * 400)
-                {
-                    Vector3 screenPos3D = Camera.mainCamera.WorldToScreenPoint(starPos);
-                    screenPos3D.y = Screen.height - screenPos3D.y;
-                    if (screenPos3D.z < 0)
-                        continue;
-
-                    Vector2 screenPos = new Vector2(screenPos3D.x, screenPos3D.y);
-                    if ((screenPos - mousePos).sqrMagnitude < 20 * 20)
-                    {
-                        closestDistance = distance3D;
-                        closestStar = star;
-                        closestStarPosition = starPos;
-                    }
-                }
-            }
-
-            if (closestDistance < float.MaxValue)
-            {
-                orbitCamera.OrbitLocation(closestStarPosition);
-                SelectedStar = closestStar;
+                GuiManager.SetStarFocus(closestStar);
             }
         }
+        if (Input.GetKeyUp(KeyCode.Mouse0))
+        {
+            Star closestStar;
+            if (PickStar(out closestStar))
+            {
+                OrbitCamera.OrbitLocation(closestStar);
+                GuiManager.SetStarFocus(closestStar);
+            }
+        }
+    }
+
+    private bool PickStar(out Star closestStar)
+    {
+        float closestDistance;
+        Vector3 camPos = Camera.mainCamera.transform.position;
+        Vector2 mousePos = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
+        closestDistance = float.MaxValue;
+        closestStar = default(Star);
+
+        foreach (Star star in stars)
+        {
+            Vector3 starPos = new Vector3(star.X, star.Y, star.Z) * Scaler.Scale;
+            float distance3D = Vector3.SqrMagnitude(camPos - starPos);
+            if (distance3D < closestDistance &&
+                distance3D < 400 * 400)
+            {
+                Vector3 screenPos3D = Camera.mainCamera.WorldToScreenPoint(starPos);
+                screenPos3D.y = Screen.height - screenPos3D.y;
+                if (screenPos3D.z < 0)
+                    continue;
+
+                Vector2 screenPos = new Vector2(screenPos3D.x, screenPos3D.y);
+                if ((screenPos - mousePos).sqrMagnitude < 20 * 20)
+                {
+                    closestDistance = distance3D;
+                    closestStar = star;
+                }
+            }
+        }
+
+        return closestDistance < float.MaxValue;
     }
 }
