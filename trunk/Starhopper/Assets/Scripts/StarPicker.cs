@@ -68,7 +68,7 @@ public class StarPicker : MonoBehaviour
             Vector3 starPos = new Vector3(star.X, star.Y, star.Z) * Scaler.Scale;
             float distance3D = Vector3.SqrMagnitude(camPos - starPos);
             if (distance3D < closestDistance &&
-                distance3D < 400 * 400)
+                distance3D < 200 * 200 * Scaler.Scale)
             {
                 Vector3 screenPos3D = Camera.mainCamera.WorldToScreenPoint(starPos);
                 screenPos3D.y = Screen.height - screenPos3D.y;
@@ -83,7 +83,7 @@ public class StarPicker : MonoBehaviour
                 }
             }
         }
-
+        
         return closestDistance < float.MaxValue;
     }
 }
