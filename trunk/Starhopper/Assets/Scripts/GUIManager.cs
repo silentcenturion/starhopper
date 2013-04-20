@@ -7,6 +7,7 @@ public class GUIManager : MonoBehaviour
     public Texture ControlPanelBackground;
 
     float _DistanceFilter = 100f;
+	float _PlanetFilter = 6000f;
     float _ToggleControlPanelHeigth;
     bool _ToggleControlPanelUp;
     float _HeaderAlpha;
@@ -16,6 +17,7 @@ public class GUIManager : MonoBehaviour
     string _Magnitude;
     string _Spectrum;
     string _ColorIndex;
+	bool _ShowPlanets;
 
     public bool IsMouseOverGui;
 
@@ -47,7 +49,14 @@ public class GUIManager : MonoBehaviour
         //Distance Filter
         _DistanceFilter = GUI.HorizontalSlider(new Rect(-15 + Screen.width - 100, 65 - _ToggleControlPanelHeigth, 100, 25), _DistanceFilter, 0, 1000);
         GUI.Label(new Rect(-15 + Screen.width - 100, 45 - _ToggleControlPanelHeigth, 100, 25), "Distance Filter");
-
+		
+		//Checkbox
+		_ShowPlanets = GUI.Toggle(new Rect(-15 + Screen.width - 100, 90	 - _ToggleControlPanelHeigth, 130, 20), _ShowPlanets, " Show Planets"); 
+		
+		//Planet Filter
+        _PlanetFilter = GUI.HorizontalSlider(new Rect(-15 + Screen.width - 100, 135 - _ToggleControlPanelHeigth, 100, 25), _PlanetFilter, 50, 10000);
+        GUI.Label(new Rect(-15 + Screen.width - 100, 115 - _ToggleControlPanelHeigth, 100, 25), "Planet Filter");
+		
         //Toggle GUI
         if (GUI.Button(new Rect(-15 + Screen.width - 100, 165 - _ToggleControlPanelHeigth, 100, 25), "Toggle (Tab)"))
         {
@@ -90,18 +99,35 @@ public class GUIManager : MonoBehaviour
 
         //Planet,Star,Astroid Information
         GUIStyle informationStyle = new GUIStyle();
-        informationStyle.fontSize = 40;
+        informationStyle.fontSize = 20;
         informationStyle.normal.textColor = new Color(255, 255, 255, _HeaderAlpha);
-        GUI.Label(new Rect(15, Screen.height * 0.3f, 100, 25), "Distance: " + _Distance, informationStyle);
-        GUI.Label(new Rect(15, Screen.height * 0.3f + 40, 100, 25), "Magnitude: " + _Magnitude, informationStyle);
-        GUI.Label(new Rect(15, Screen.height * 0.3f + 80, 100, 25), "Spectrum: " + _Spectrum, informationStyle);
-        GUI.Label(new Rect(15, Screen.height * 0.3f + 120, 100, 25), "Color Index: " + _ColorIndex, informationStyle);
-    }
+        GUI.Label(new Rect(15, Screen.height * 0.3f, 0, 25), "Distance:", informationStyle);
+        GUI.Label(new Rect(15, Screen.height * 0.3f + 30, 100, 25), "Magnitude:", informationStyle);
+        GUI.Label(new Rect(15, Screen.height * 0.3f + 60, 100, 25), "Spectrum:", informationStyle);
+        GUI.Label(new Rect(15, Screen.height * 0.3f + 90, 100, 25), "Color Index:", informationStyle);
+		
+        informationStyle.normal.textColor = new Color(255, 0, 255, _HeaderAlpha);
+        GUI.Label(new Rect(150, Screen.height * 0.3f, 0, 25), _Distance, informationStyle);
+        GUI.Label(new Rect(150, Screen.height * 0.3f + 30, 100, 25),  _Magnitude, informationStyle);
+        GUI.Label(new Rect(150, Screen.height * 0.3f + 60, 100, 25), _Spectrum, informationStyle);
+        GUI.Label(new Rect(150, Screen.height * 0.3f + 90, 100, 25), _ColorIndex, informationStyle);
+		
+		}
 
     public void HideStarFocus()
     {
         _HeaderUp = false;
     }
+	
+	public bool ShowPlanets()
+	{
+		return _ShowPlanets;
+	}
+	
+	public float GetPlanetFilter()
+	{
+		return _PlanetFilter;
+	}
 
     public void SetStarFocus(Star star)
     {
