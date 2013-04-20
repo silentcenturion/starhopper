@@ -64,9 +64,9 @@ public class OrbitCamera : MonoBehaviour
                 transform.Rotate(0, 0, rotationZ);
             }
 
-            float speed = 0.1f;
+            float speed = 0.01f * Scaler.Scale;
             if (Input.GetKey(KeyCode.LeftShift))
-                speed = 1f;
+                speed = 0.1f * Scaler.Scale;
 
             if (Input.GetKey(KeyCode.A))
                 transform.Translate(-speed, 0, 0);

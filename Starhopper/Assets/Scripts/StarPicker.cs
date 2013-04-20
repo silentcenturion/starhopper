@@ -3,7 +3,7 @@ using System.Collections;
 
 public class StarPicker : MonoBehaviour
 {
-    private Star[] stars;
+    public static Star[] Stars;
 
     public GUIManager GuiManager;
     public OrbitCamera OrbitCamera;
@@ -11,10 +11,10 @@ public class StarPicker : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        stars = LoadStars.Load();
+        Stars = LoadStars.Load();
 
-        OrbitCamera.OrbitLocation(stars[0]);
-        GuiManager.SetStarFocus(stars[0]);
+        OrbitCamera.OrbitLocation(Stars[0]);
+        GuiManager.SetStarFocus(Stars[0]);
     }
 
     // Update is called once per frame
@@ -32,8 +32,8 @@ public class StarPicker : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            OrbitCamera.OrbitLocation(stars[0]);
-            GuiManager.SetStarFocus(stars[0]);
+            OrbitCamera.OrbitLocation(Stars[0]);
+            GuiManager.SetStarFocus(Stars[0]);
         }
 
         if (Input.GetKey(KeyCode.Mouse0))
@@ -63,7 +63,7 @@ public class StarPicker : MonoBehaviour
         closestDistance = float.MaxValue;
         closestStar = default(Star);
 
-        foreach (Star star in stars)
+        foreach (Star star in Stars)
         {
             Vector3 starPos = new Vector3(star.X, star.Y, star.Z) * Scaler.Scale;
             float distance3D = Vector3.SqrMagnitude(camPos - starPos);
