@@ -9,6 +9,9 @@ public class OrbitCamera : MonoBehaviour
 
     private StarMesh[] starMeshes;
 
+    private float rotationCooldown;
+    private float currentTravelTime;
+
     public bool orbitActive;
 
     public Vector3 targetPosition;
@@ -91,11 +94,24 @@ public class OrbitCamera : MonoBehaviour
         }
         else if (orbitActive)
         {
-            x += Input.GetAxis("Mouse X") * xSpeed * 0.01f;
-            y -= Input.GetAxis("Mouse Y") * ySpeed * 0.02f;
+            float xDelta = Input.GetAxis("Mouse X") * xSpeed * 0.01f;
+            float yDelta = Input.GetAxis("Mouse Y") * ySpeed * 0.02f;
+            if (xDelta != 0 || yDelta != 0)
+            {
+                rotationCooldown = 3;
+                x += xDelta;
+                y -= yDelta;
+            }
 
-            x += 0.02f;
-            y += 0.02f;
+            if (rotationCooldown > 0)
+            {
+                rotationCooldown -= Time.deltaTime;
+            }
+            else
+            {
+                x += 0.02f;
+                y += 0.02f;
+            }
 
             Quaternion rotation = Quaternion.Euler(y, x, z);
 
@@ -105,12 +121,19 @@ public class OrbitCamera : MonoBehaviour
             Vector3 position = rotation * negDistance + targetPosition;
 
             transform.rotation = rotation;
-            transform.position = position;
+
+            currentTravelTime += Time.deltaTime;
+
+            float percent = currentTravelTime / 2f;
+            if (percent > 1)
+                percent = 1;
+            transform.position = Vector3.Slerp(transform.position, position, percent);
         }
     }
 
     public void OrbitLocation(Vector3 position)
     {
+        currentTravelTime = 0;
         targetPosition = position;
         orbitActive = true;
     }
