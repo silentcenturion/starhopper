@@ -1,4 +1,5 @@
-﻿public struct Star
+﻿using System.Collections.Generic;
+public class Star
 {
     public int StarID;
     public int HIP;
@@ -23,4 +24,6 @@
     public float VX;
     public float VY;
     public float VZ;
+
+    public List<Exoplanet> Planets = new List<Exoplanet>();
 }
