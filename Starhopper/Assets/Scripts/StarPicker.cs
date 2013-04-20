@@ -3,14 +3,14 @@ using System.Collections;
 
 public class StarPicker : MonoBehaviour
 {
-    Star[] stars;
+    private Star[] stars;
 
-    OrbitCamera orbitCamera;
+    private OrbitCamera orbitCamera;
 
     public static Star SelectedStar;
 
     // Use this for initialization
-    void Awake()
+    void Start()
     {
         orbitCamera = Camera.mainCamera.GetComponent<OrbitCamera>();
 

@@ -7,25 +7,22 @@ public static class LoadStars
 {
     public static Star[] Load()
     {
-        Star[] stars = new Star[120000];
+        TextAsset starDatabase = (TextAsset)Resources.Load("hygxyz");
 
-        StreamReader sr = new StreamReader(@"hygxyz.csv");
-
-        // The first line has captions about the data...
-        sr.ReadLine();
-
+        string[] lines = starDatabase.text.Split('\n');
+        int numberOfStars = lines.Length - 1;
+        Debug.Log("Parsing " + numberOfStars + " stars...");
+        Star[] stars = new Star[numberOfStars];
+        
         int currentStar = 0;
-        while (sr.EndOfStream == false)
+        for (int lineIndex = 1; lineIndex < lines.Length - 1; lineIndex++) // skip first line that contains headers
         {
-            string line = sr.ReadLine();
-            stars[currentStar] = ParseStar(line);
-
-            currentStar++;
+            stars[currentStar++] = ParseStar(lines[lineIndex]);
 
             if (currentStar > stars.Length)
                 break;
         }
-
+        Debug.Log(currentStar + " stars parsed!");
         Array.Resize(ref stars, currentStar);
         return stars;
     }
