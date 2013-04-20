@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: 5a198e8bcb6dd8941adcd707bc21b15c
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - SunMaterial: {fileID: 2100000, guid: 2c9a3d912c3c3254283055050896e9f0, type: 2}
+  - PlanetMaterial: {fileID: 2100000, guid: 2c9a3d912c3c3254283055050896e9f0, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 

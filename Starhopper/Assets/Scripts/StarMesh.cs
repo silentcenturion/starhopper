@@ -10,6 +10,8 @@ using System.Collections.Generic;
 public class StarMesh : MonoBehaviour
 {
     public Material Material;
+    public Material SunMaterial;
+
 #if UNITY_EDITOR
     [MenuItem("Space App Challenge/Create Stars")]
     static void CreateStars()
@@ -29,10 +31,28 @@ public class StarMesh : MonoBehaviour
         int maxStarsPerMesh = 15000;
         for (int i = 0; i < stars.Length; i += maxStarsPerMesh)
         {
+            //GeneratePointMesh(stars, i, Mathf.Min(maxStarsPerMesh, stars.Length - i), min, max);
             GenerateMesh(stars, i, Mathf.Min(maxStarsPerMesh, stars.Length - i), min, max);
         }
     }
 #endif
+
+//#if UNITY_EDITOR
+//    [MenuItem("Space App Challenge/Create Sun")]
+//    static void CreateSun()
+//    {
+//        Star[] stars = LoadStars.Load();
+//        Star[] sun = new Star[] { stars[0] };
+
+//        float min = float.MaxValue;
+//        float max = float.MinValue;
+//        GetMinMaxAbsMag(stars, ref min, ref max);
+
+//        GameObject go =  GenerateMesh(sun, 0, 1, min, max, true);
+//        go.name = "sunMesh";
+//        go.transform.position = new Vector3(sun[0].X, sun[0].Y, sun[0].Z);
+//    }
+//#endif
 
     static Color getColor(int r, int g, int b)
     {
@@ -81,7 +101,7 @@ public class StarMesh : MonoBehaviour
             Color color2 = colors[colorIndex + 1];
             return Color.Lerp(color1, color2, (float)colorModifier / 10);
         }
-        return new Color(1, 0, 0, 1);
+        return new Color(1, 1, 1, 1);
     }
 
     static void GetMinMaxAbsMag(Star[] star, ref float min, ref float max)
@@ -95,7 +115,8 @@ public class StarMesh : MonoBehaviour
         }
     }
 
-    static void GenerateMesh(Star[] stars, int offset, int count, float minMag, float maxMag)
+
+    static GameObject GenerateMesh(Star[] stars, int offset, int count, float minMag, float maxMag, bool sun=false)
     {
         Vector3[] starVectors = new Vector3[count];
         for (int i = 0; i < count; i++)
@@ -117,9 +138,8 @@ public class StarMesh : MonoBehaviour
             int vert2 = vertIndex++;
             int vert3 = vertIndex++;
             int vert4 = vertIndex++;
-
-
-            Color color = Color.green;
+            
+            Color color = Color.white;
             string spectrum = stars[i + offset].Spectrum;
             if (spectrum.Length > 0)
                 color = GetStarColor(spectrum[0], spectrum);
@@ -129,16 +149,20 @@ public class StarMesh : MonoBehaviour
             float normalizedMag = (absMag - minMag) / (maxMag - minMag);
             color.a = 1 - normalizedMag;
 
+
             colors[vert1] = color;
             colors[vert2] = color;
             colors[vert3] = color;
             colors[vert4] = color;
 
+            Vector3 position = Vector3.zero;
+            if (sun == false)
+                position = starVectors[i];
 
-            vertices[vert1] = starVectors[i];
-            vertices[vert2] = starVectors[i];
-            vertices[vert3] = starVectors[i];
-            vertices[vert4] = starVectors[i];
+            vertices[vert1] = position;
+            vertices[vert2] = position;
+            vertices[vert3] = position;
+            vertices[vert4] = position;
 
             uvs[uvIndex++] = new Vector2(1, 1);
             uvs[uvIndex++] = new Vector2(1, -1);
@@ -157,9 +181,9 @@ public class StarMesh : MonoBehaviour
         Mesh mesh = new Mesh();
         mesh.vertices = vertices;
         mesh.uv = uvs;
-        mesh.triangles = triangles;
         mesh.colors = colors;
         mesh.name = "starMesh";
+        mesh.triangles = triangles;
         mesh.RecalculateBounds();
 
         GameObject go = new GameObject("starMesh");
@@ -169,5 +193,7 @@ public class StarMesh : MonoBehaviour
         go.AddComponent<Scaler>();
         meshFilter.sharedMesh = mesh;
         meshRenderer.sharedMaterial = starMesh.Material;
+
+        return go;
     }
 }

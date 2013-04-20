@@ -4,6 +4,7 @@ MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - Material: {fileID: 2100000, guid: 7dfc765943a3cfe459cfe5d9d1492fd3, type: 2}
+  - SunMaterial: {fileID: 2100000, guid: 2c9a3d912c3c3254283055050896e9f0, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

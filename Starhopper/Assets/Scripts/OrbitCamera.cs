@@ -27,7 +27,7 @@ public class OrbitCamera : MonoBehaviour
 
     public float currentZoom = 50.0f;
     public float zoomSpeed = 5;
-    public float zoomDistanceMin = 0.5f;
+    public float zoomDistanceMin = 0.1f;
     public float zoomDistanceMax = 200;
 
     // Use this for initialization
