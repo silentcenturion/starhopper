@@ -1,4 +1,4 @@
-﻿Shader "Star Billboards" {
+Shader "StarBillboards" {
 	SubShader {
 		Tags { "Queue" = "Transparent" }
 		Cull Off
