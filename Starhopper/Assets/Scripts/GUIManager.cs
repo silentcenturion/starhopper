@@ -21,15 +21,6 @@ public class GUIManager : MonoBehaviour {
 	{
 		if( Input.GetKeyDown(KeyCode.Tab) )
 			_ToggleControlPanelUp = !_ToggleControlPanelUp;
-		
-		if( _ToggleControlPanelUp )
-		{
-			SetStarFocus("Pahaöanms");
-		}
-		else
-		{
-			SetStarFocus("");
-		}
 	}
 	
 	void OnGUI()
