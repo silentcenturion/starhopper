@@ -101,8 +101,6 @@ public class StarMesh : MonoBehaviour
         for (int i = 0; i < count; i++)
         {
             starVectors[i] = new Vector3(stars[i + offset].X, stars[i + offset].Y, stars[i + offset].Z);
-
-            //starVectors[i] = Random.onUnitSphere * Random.Range(-10000, 10000);
         }
 
         Vector3[] vertices = new Vector3[starVectors.Length * 4];
@@ -119,7 +117,6 @@ public class StarMesh : MonoBehaviour
             int vert2 = vertIndex++;
             int vert3 = vertIndex++;
             int vert4 = vertIndex++;
-
 
 
             Color color = Color.green;

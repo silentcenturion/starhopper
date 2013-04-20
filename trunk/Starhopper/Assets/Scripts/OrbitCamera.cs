@@ -51,9 +51,7 @@ public class OrbitCamera : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Return))
             OrbitLocation(Vector3.zero);
 
-        if (Input.GetKey(KeyCode.Mouse1) ||
-            Input.GetKey(KeyCode.Mouse2) ||
-            Input.GetKey(KeyCode.Space))
+        if (Input.GetKey(KeyCode.Mouse1))
         {
             orbitActive = false;
 
@@ -100,8 +98,12 @@ public class OrbitCamera : MonoBehaviour
             if (xDelta != 0 || yDelta != 0)
             {
                 rotationCooldown = 0.5f;
-                //x += xDelta;
-                //y -= yDelta;
+                if (Input.GetKey(KeyCode.Space) ||
+                    Input.GetKey(KeyCode.Mouse2))
+                {
+                    x += xDelta;
+                    y -= yDelta;
+                }
             }
 
             if (rotationCooldown > 0)
@@ -148,6 +150,6 @@ public class OrbitCamera : MonoBehaviour
         y = rotation.eulerAngles.x;
         z = rotation.eulerAngles.z;
 
-        targetTravelTime = lengthToTargetPos / 10 * Scaler.Scale;
+        targetTravelTime = lengthToTargetPos / 10;
     }
 }
