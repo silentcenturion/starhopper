@@ -12,6 +12,9 @@ public class StarPicker : MonoBehaviour
     void Start()
     {
         stars = LoadStars.Load();
+
+        OrbitCamera.OrbitLocation(stars[0]);
+        GuiManager.SetStarFocus(stars[0]);
     }
 
     // Update is called once per frame
@@ -25,6 +28,12 @@ public class StarPicker : MonoBehaviour
         {
             OrbitCamera.DeactivateOrbit();
             GuiManager.HideStarFocus();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            OrbitCamera.OrbitLocation(stars[0]);
+            GuiManager.SetStarFocus(stars[0]);
         }
 
         if (Input.GetKey(KeyCode.Mouse0))

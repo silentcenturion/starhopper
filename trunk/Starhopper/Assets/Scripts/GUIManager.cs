@@ -41,7 +41,7 @@ public class GUIManager : MonoBehaviour
         IsMouseOverGui = rect.Contains(mousePos);
 
         //Universe Scale
-        Scaler.Scale = GUI.HorizontalSlider(new Rect(-15 + Screen.width - 100, 25 - _ToggleControlPanelHeigth, 100, 25), Scaler.Scale, 0.1f, 10);
+        Scaler.Scale = GUI.HorizontalSlider(new Rect(-15 + Screen.width - 100, 25 - _ToggleControlPanelHeigth, 100, 25), Scaler.Scale, 0.5f, 150);
         GUI.Label(new Rect(-15 + Screen.width - 100, 5 - _ToggleControlPanelHeigth, 100, 25), "Scale Universe");
 
         //Distance Filter
@@ -107,11 +107,11 @@ public class GUIManager : MonoBehaviour
     {
         _HeaderUp = true;
         if (string.IsNullOrEmpty(star.ProperName) == false)
-            _FocusedStarName = star.Gliese;
+            _FocusedStarName = star.ProperName;
         else if (string.IsNullOrEmpty(star.BayerFlamsteed) == false)
             _FocusedStarName = star.BayerFlamsteed;
         else
-            _FocusedStarName = star.ProperName;
+            _FocusedStarName = star.Gliese;
 
         _Distance = star.Distance.ToString();
         _Magnitude = star.Mag.ToString();
