@@ -20,7 +20,7 @@ public class StarPicker : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (GuiManager.IsMouseOverGui)
+        if (GuiManager != null && GuiManager.IsMouseOverGui)
             return;
 
         if (Input.GetKeyDown(KeyCode.Mouse0) ||
@@ -30,7 +30,8 @@ public class StarPicker : MonoBehaviour
             GuiManager.HideStarFocus();
         }
 
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (Input.GetKeyDown(KeyCode.H) ||
+            Input.GetKeyDown(KeyCode.Home))
         {
             OrbitCamera.OrbitLocation(Stars[0]);
             GuiManager.SetStarFocus(Stars[0]);
@@ -83,7 +84,7 @@ public class StarPicker : MonoBehaviour
                 }
             }
         }
-        
+
         return closestDistance < float.MaxValue;
     }
 }
