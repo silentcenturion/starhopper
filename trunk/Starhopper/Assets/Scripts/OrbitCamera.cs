@@ -3,7 +3,9 @@ using System.Collections;
 
 public class OrbitCamera : MonoBehaviour
 {
-    public Transform target;
+    public bool orbitActive;
+
+    public Vector3 targetPosition;
     public float distance = 5.0f;
     public float xSpeed = 120.0f;
     public float ySpeed = 120.0f;
@@ -16,6 +18,7 @@ public class OrbitCamera : MonoBehaviour
 
     float x = 0.0f;
     float y = 0.0f;
+    float z = 0.0f;
 
     // Use this for initialization
     void Start()
@@ -31,27 +34,63 @@ public class OrbitCamera : MonoBehaviour
 
     void LateUpdate()
     {
-        if (target)
+        if (Input.GetKey(KeyCode.Mouse0) ||
+            Input.GetKey(KeyCode.Mouse1) ||
+            Input.GetKey(KeyCode.Mouse2) ||
+            Input.GetKey(KeyCode.Space))
         {
-            //x += Input.GetAxis("Mouse X") * xSpeed * distance * 0.02f;
-            //y -= Input.GetAxis("Mouse Y") * ySpeed * 0.04f;
+            orbitActive = false;
 
-            x += 0.01f;
-            y += 0.02f;
+            float rotationX = Input.GetAxis("Mouse X") * 1f;
+            transform.Rotate(0, rotationX, 0);
 
-            //y = ClampAngle(y, yMinLimit, yMaxLimit);
+            float rotationY = Input.GetAxis("Mouse Y") * 1f;
+            transform.Rotate(-rotationY, 0, 0);
 
-            Quaternion rotation = Quaternion.Euler(y, x, 0);
+            if (Input.GetKey(KeyCode.LeftControl))
+            {
+                float rotationZ = Input.GetAxis("Mouse X") * 1f;
+                transform.Rotate(0, 0, rotationZ);
+            }
+
+            float speed = 0.1f;
+            if (Input.GetKey(KeyCode.LeftShift))
+                speed = 1f;
+
+            if (Input.GetKey(KeyCode.A))
+                transform.Translate(-speed, 0, 0);
+            if (Input.GetKey(KeyCode.D))
+                transform.Translate(speed, 0, 0);
+
+            if (Input.GetKey(KeyCode.S))
+                transform.Translate(0, 0, -speed);
+            if (Input.GetKey(KeyCode.W))
+                transform.Translate(0, 0, speed);
+
+            if (Input.GetKey(KeyCode.Q))
+                transform.Translate(0, -speed, 0);
+            if (Input.GetKey(KeyCode.E))
+                transform.Translate(0, speed, 0);
+
+            targetPosition = transform.position + transform.forward * distance;
+            x = transform.eulerAngles.y;
+            y = transform.eulerAngles.x;
+            z = transform.eulerAngles.z;
+        }
+        else if (orbitActive)
+        {
+            x += Input.GetAxis("Mouse X") * xSpeed * 0.02f;
+            y -= Input.GetAxis("Mouse Y") * ySpeed * 0.04f;
+
+            //x += 0.02f;
+            //y += 0.02f;
+
+            Quaternion rotation = Quaternion.Euler(y, x, z);
 
             distance = Mathf.Clamp(distance - Input.GetAxis("Mouse ScrollWheel") * 5, distanceMin, distanceMax);
 
-            RaycastHit hit;
-            if (Physics.Linecast(target.position, transform.position, out hit))
-            {
-                distance -= hit.distance;
-            }
             Vector3 negDistance = new Vector3(0.0f, 0.0f, -distance);
-            Vector3 position = rotation * negDistance + target.position;
+            Vector3 position = rotation * negDistance + targetPosition;
 
             transform.rotation = rotation;
             transform.position = position;
