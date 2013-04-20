@@ -24,9 +24,9 @@ public class PlanetsWithStars : MonoBehaviour
 	
 	void Update()
 	{
+		_DataList.Clear();
 		if( guiManager.ShowPlanets() )
 		{
-			_DataList.Clear();
 			
             Vector3 camPos = Camera.mainCamera.transform.position;
 			
