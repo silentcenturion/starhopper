@@ -13,6 +13,9 @@ public class OrbitCamera : MonoBehaviour
     private float currentTravelTime;
     private float targetTravelTime;
 
+    private Vector3 startPosition;
+    private Quaternion startRotation;
+
     public bool orbitActive;
 
     public Vector3 targetPosition;
@@ -110,7 +113,25 @@ public class OrbitCamera : MonoBehaviour
                 y += 0.02f;
             }
 
-            Quaternion rotation = Quaternion.Euler(y, x, z);
+            Quaternion rotation;
+
+            //Debug.Log("currentTravelTime: " + currentTravelTime + ", targetTravelTime: " + targetTravelTime);
+            if (currentTravelTime < targetTravelTime)
+            {
+                Vector3 direction = targetPosition * Scaler.Scale - Camera.mainCamera.transform.position;
+                direction.Normalize();
+
+                rotation = Quaternion.LookRotation(direction);
+                x = rotation.eulerAngles.y;
+                y = rotation.eulerAngles.x;
+                z = rotation.eulerAngles.z;
+            }
+            else
+            {
+                rotation = Quaternion.Euler(y, x, z);
+                startPosition = transform.position;
+                startRotation = transform.rotation;
+            }
 
             currentZoom = Mathf.Clamp(currentZoom - Input.GetAxis("Mouse ScrollWheel") * zoomSpeed, zoomDistanceMin, zoomDistanceMax);
 
@@ -120,12 +141,18 @@ public class OrbitCamera : MonoBehaviour
             currentTravelTime += Time.deltaTime;
 
             float percent = 1;
+
             if (targetTravelTime > 0)
                 percent = currentTravelTime / targetTravelTime;
             if (percent > 1)
                 percent = 1;
-            transform.position = Vector3.Slerp(transform.position, position, percent);
-            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, percent);
+            transform.position = Vector3.Slerp(startPosition, position, Mathf.SmoothStep(0, 1, percent));
+
+            if (targetTravelTime > 0)
+                percent = currentTravelTime / (targetTravelTime * 0.5f);
+            if (percent > 1)
+                percent = 1;
+            transform.rotation = Quaternion.Slerp(startRotation, rotation, Mathf.SmoothStep(0, 1, percent));
         }
     }
 
@@ -142,13 +169,9 @@ public class OrbitCamera : MonoBehaviour
 
         Vector3 direction = targetPosition * Scaler.Scale - Camera.mainCamera.transform.position;
         float lengthToTargetPos = direction.magnitude;
-        direction.Normalize();
+        targetTravelTime = lengthToTargetPos / 2 / Scaler.Scale;
 
-        Quaternion rotation = Quaternion.LookRotation(direction);
-        x = rotation.eulerAngles.y;
-        y = rotation.eulerAngles.x;
-        z = rotation.eulerAngles.z;
-
-        targetTravelTime = lengthToTargetPos / 10;
+        startPosition = transform.position;
+        startRotation = transform.rotation;
     }
 }

@@ -110,13 +110,14 @@ public class GUIManager : MonoBehaviour
             _FocusedStarName = star.ProperName;
         else if (string.IsNullOrEmpty(star.BayerFlamsteed) == false)
             _FocusedStarName = star.BayerFlamsteed;
-        else
+        else if (string.IsNullOrEmpty(star.Gliese) == false)
             _FocusedStarName = star.Gliese;
+        else
+            _FocusedStarName = "Unnamed star";
 
         _Distance = star.Distance.ToString();
         _Magnitude = star.Mag.ToString();
         _Spectrum = star.Spectrum;
         _ColorIndex = star.ColorIndex.ToString();
     }
-
 }
