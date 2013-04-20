@@ -7,7 +7,7 @@ public class GUIManager : MonoBehaviour
     public Texture ControlPanelBackground;
 
     float _DistanceFilter = 100f;
-	float _PlanetFilter = 6000f;
+	float _NameFilter = 50f;
     float _ToggleControlPanelHeigth;
     bool _ToggleControlPanelUp;
     float _HeaderAlpha;
@@ -17,7 +17,7 @@ public class GUIManager : MonoBehaviour
     string _Magnitude;
     string _Spectrum;
     string _ColorIndex;
-	bool _ShowPlanets;
+	bool _ShowNameplates;
 
     public bool IsMouseOverGui;
 
@@ -51,11 +51,11 @@ public class GUIManager : MonoBehaviour
         GUI.Label(new Rect(-15 + Screen.width - 100, 45 - _ToggleControlPanelHeigth, 100, 25), "Distance Filter");
 		
 		//Checkbox
-		_ShowPlanets = GUI.Toggle(new Rect(-15 + Screen.width - 100, 90	 - _ToggleControlPanelHeigth, 130, 20), _ShowPlanets, " Show Planets"); 
+		_ShowNameplates = GUI.Toggle(new Rect(-15 + Screen.width - 100, 90	 - _ToggleControlPanelHeigth, 130, 20), _ShowNameplates, " Show Names"); 
 		
 		//Planet Filter
-        _PlanetFilter = GUI.HorizontalSlider(new Rect(-15 + Screen.width - 100, 135 - _ToggleControlPanelHeigth, 100, 25), _PlanetFilter, 50, 10000);
-        GUI.Label(new Rect(-15 + Screen.width - 100, 115 - _ToggleControlPanelHeigth, 100, 25), "Planet Filter");
+        _NameFilter = GUI.HorizontalSlider(new Rect(-15 + Screen.width - 100, 135 - _ToggleControlPanelHeigth, 100, 25), _NameFilter, 50, 500);
+        GUI.Label(new Rect(-15 + Screen.width - 100, 115 - _ToggleControlPanelHeigth, 100, 25), "Name Filter");
 		
         //Toggle GUI
         if (GUI.Button(new Rect(-15 + Screen.width - 100, 165 - _ToggleControlPanelHeigth, 100, 25), "Toggle (Tab)"))
@@ -121,26 +121,18 @@ public class GUIManager : MonoBehaviour
 	
 	public bool ShowPlanets()
 	{
-		return _ShowPlanets;
+		return _ShowNameplates;
 	}
 	
 	public float GetPlanetFilter()
 	{
-		return _PlanetFilter;
+		return _NameFilter;
 	}
 
     public void SetStarFocus(Star star)
     {
         _HeaderUp = true;
-        if (string.IsNullOrEmpty(star.ProperName) == false)
-            _FocusedStarName = star.ProperName;
-        else if (string.IsNullOrEmpty(star.BayerFlamsteed) == false)
-            _FocusedStarName = star.BayerFlamsteed;
-        else if (string.IsNullOrEmpty(star.Gliese) == false)
-            _FocusedStarName = star.Gliese;
-        else
-            _FocusedStarName = "Unnamed star";
-
+        _FocusedStarName = star.GetName();
         _Distance = star.Distance.ToString();
         _Magnitude = star.Mag.ToString();
         _Spectrum = star.Spectrum;

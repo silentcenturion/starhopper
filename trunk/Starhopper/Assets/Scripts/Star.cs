@@ -26,4 +26,16 @@ public class Star
     public float VZ;
 
     public List<Exoplanet> Planets = new List<Exoplanet>();
+	
+	public string GetName()
+	{
+		if (string.IsNullOrEmpty(ProperName) == false)
+            return ProperName;
+        else if (string.IsNullOrEmpty(BayerFlamsteed) == false)
+            return BayerFlamsteed;
+        else if (string.IsNullOrEmpty(Gliese) == false)
+            return Gliese;
+        else
+            return "Unnamed Star";
+	}
 }
