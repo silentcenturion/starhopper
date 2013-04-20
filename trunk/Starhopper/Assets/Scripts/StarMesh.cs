@@ -168,6 +168,7 @@ public class StarMesh : MonoBehaviour
         StarMesh starMesh = go.AddComponent<StarMesh>();
         MeshFilter meshFilter = go.GetComponent<MeshFilter>();
         MeshRenderer meshRenderer = go.GetComponent<MeshRenderer>();
+        go.AddComponent<Scaler>();
         meshFilter.sharedMesh = mesh;
         meshRenderer.sharedMaterial = starMesh.Material;
     }
