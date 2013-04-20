@@ -9,7 +9,7 @@ public class GUIManager : MonoBehaviour {
 	float _DistanceFilter = 100f;
 	float _ToggleControlPanelHeigth;
 	bool _ToggleControlPanelUp;
-	float _HeaderHeigth;
+	float _HeaderAlpha;
 	bool _HeaderUp = true;
 	string _FocusedStarName;
 	
@@ -21,6 +21,15 @@ public class GUIManager : MonoBehaviour {
 	{
 		if( Input.GetKeyDown(KeyCode.Tab) )
 			_ToggleControlPanelUp = !_ToggleControlPanelUp;
+		
+		if( _ToggleControlPanelUp )
+		{
+			SetStarFocus("Pahaöanms");
+		}
+		else
+		{
+			SetStarFocus("");
+		}
 	}
 	
 	void OnGUI()
@@ -36,26 +45,26 @@ public class GUIManager : MonoBehaviour {
 		
 		//Distance Filter
 		_DistanceFilter = GUI.HorizontalSlider(new Rect(15, 65 - _ToggleControlPanelHeigth, 100, 25), _DistanceFilter, 0, 1000);
-		GUI.Label(new Rect(15, 45 - _ToggleControlPanelHeigth, 100, 25), "Distance Filter");
+		GUI.Label(new Rect(15, 45, 100, 25), "Distance Filter");
 		
 		//Hide / Show Header
 		GUIStyle headerStyle = new GUIStyle();
 		headerStyle.fontSize = 50;
-		headerStyle.normal.textColor = Color.white;
-		GUI.Label(new Rect(Screen.width / 2 - headerStyle.CalcSize(new GUIContent(_FocusedStarName)).x / 2, 30 - _HeaderHeigth, 100, 25), _FocusedStarName , headerStyle);
+		headerStyle.normal.textColor = new Color(255,255,255,_HeaderAlpha);
+		GUI.Label(new Rect(Screen.width / 2 - headerStyle.CalcSize(new GUIContent(_FocusedStarName)).x / 2, 30, 100, 25), _FocusedStarName , headerStyle);
 		if( _HeaderUp )
 		{
-			if( _HeaderHeigth < 160 )
-				_HeaderHeigth += Time.deltaTime * 300f;
+			if( _HeaderAlpha < 1 )
+				_HeaderAlpha += Time.deltaTime * 1f;
 			else
-				_HeaderHeigth = 160;
+				_HeaderAlpha = 1;
 		}
 		else
 		{
-			if( _HeaderHeigth > 0 )
-				_HeaderHeigth -= Time.deltaTime * 300f;
+			if( _HeaderAlpha > 0 )
+				_HeaderAlpha -= Time.deltaTime * 1f;
 			else
-				_HeaderHeigth = 0;
+				_HeaderAlpha = 0;
 		}
 		
 		//Toggle GUI
@@ -82,10 +91,10 @@ public class GUIManager : MonoBehaviour {
 	public void SetStarFocus(string starInFocus)
 	{
 		if( starInFocus == string.Empty || starInFocus == "" )
-			_HeaderUp = true;
+			_HeaderUp = false;
 		else
 		{
-			_HeaderUp = false;
+			_HeaderUp = true;
 			_FocusedStarName = starInFocus;
 		}
 	}
