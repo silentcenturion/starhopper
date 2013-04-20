@@ -19,7 +19,7 @@ public class StarMesh : MonoBehaviour
         {
             DestroyImmediate((starMesh as StarMesh).gameObject);
         }
-        
+
         Star[] stars = LoadStars.Load();
 
         float min = float.MaxValue;
@@ -27,7 +27,7 @@ public class StarMesh : MonoBehaviour
         GetMinMaxAbsMag(stars, ref min, ref max);
 
         int maxStarsPerMesh = 15000;
-        for (int i = 0; i < stars.Length; i+=maxStarsPerMesh)
+        for (int i = 0; i < stars.Length; i += maxStarsPerMesh)
         {
             GenerateMesh(stars, i, Mathf.Min(maxStarsPerMesh, stars.Length - i), min, max);
         }
@@ -84,7 +84,7 @@ public class StarMesh : MonoBehaviour
         return new Color(1, 0, 0, 1);
     }
 
-    static void GetMinMaxAbsMag(Star[] star,  ref float min, ref float max)
+    static void GetMinMaxAbsMag(Star[] star, ref float min, ref float max)
     {
         for (int i = 0; i < star.Length; i++)
         {
@@ -101,6 +101,7 @@ public class StarMesh : MonoBehaviour
         for (int i = 0; i < count; i++)
         {
             starVectors[i] = new Vector3(stars[i + offset].X, stars[i + offset].Y, stars[i + offset].Z);
+
             //starVectors[i] = Random.onUnitSphere * Random.Range(-10000, 10000);
         }
 
@@ -130,7 +131,7 @@ public class StarMesh : MonoBehaviour
             float absMag = stars[i + offset].AbsMag;
             float normalizedMag = (absMag - minMag) / (maxMag - minMag);
             color.a = 1 - normalizedMag;
-            
+
             colors[vert1] = color;
             colors[vert2] = color;
             colors[vert3] = color;
