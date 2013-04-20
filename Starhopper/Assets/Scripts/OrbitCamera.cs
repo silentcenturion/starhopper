@@ -49,12 +49,10 @@ public class OrbitCamera : MonoBehaviour
 
 
         if (Input.GetKeyDown(KeyCode.Return))
-            OrbitLocation(Vector3.zero);
+            OrbitLocation(default(Star));
 
         if (Input.GetKey(KeyCode.Mouse1))
         {
-            orbitActive = false;
-
             float rotationX = Input.GetAxis("Mouse X") * 1f;
             transform.Rotate(0, rotationX, 0);
 
@@ -121,7 +119,7 @@ public class OrbitCamera : MonoBehaviour
             distance = Mathf.Clamp(distance - Input.GetAxis("Mouse ScrollWheel") * zoomSpeed, zoomDistanceMin, zoomDistanceMax);
 
             Vector3 negDistance = new Vector3(0.0f, 0.0f, -distance);
-            Vector3 position = rotation * negDistance + targetPosition;
+            Vector3 position = rotation * negDistance + targetPosition * Scaler.Scale;
 
             currentTravelTime += Time.deltaTime;
 
@@ -135,13 +133,18 @@ public class OrbitCamera : MonoBehaviour
         }
     }
 
-    public void OrbitLocation(Vector3 position)
+    public void DeactivateOrbit()
+    {
+        orbitActive = false;
+    }
+
+    public void OrbitLocation(Star star)
     {
         currentTravelTime = 0;
         orbitActive = true;
-        targetPosition = position;
+        targetPosition = new Vector3(star.X, star.Y, star.Z);
 
-        Vector3 direction = targetPosition - Camera.mainCamera.transform.position;
+        Vector3 direction = targetPosition * Scaler.Scale - Camera.mainCamera.transform.position;
         float lengthToTargetPos = direction.magnitude;
         direction.Normalize();
 
