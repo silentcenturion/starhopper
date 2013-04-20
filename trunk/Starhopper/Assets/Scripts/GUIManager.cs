@@ -5,6 +5,7 @@ using System.Collections;
 public class GUIManager : MonoBehaviour
 {
     public Texture ControlPanelBackground;
+	public OrbitCamera OrbitCamera;
 
     float _DistanceFilter = 100f;
 	float _NameFilter = 50f;
@@ -18,21 +19,42 @@ public class GUIManager : MonoBehaviour
     string _Spectrum;
     string _ColorIndex;
 	bool _ShowNameplates;
+	string _InputText;
 
     public bool IsMouseOverGui;
 
     void Start()
     {
+		_InputText = "";
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Tab))
             _ToggleControlPanelUp = !_ToggleControlPanelUp;
+		
+		
     }
 
     void OnGUI()
-    {
+    {		
+		if( Event.current.keyCode == KeyCode.Tab || Event.current.character == '\t')
+			Event.current.Use();
+		if( Event.current.keyCode == KeyCode.Return || Event.current.character == '\n')
+		{
+			foreach(Star star in StarPicker.Stars)
+			{
+				if(_InputText.ToLower() == star.GetName().ToLower() )
+				{
+					OrbitCamera.OrbitLocation(star);
+					SetStarFocus(star);
+					GUI.SetNextControlName("");
+					GUI.FocusControl("");
+					break;
+				}
+			}
+		}
+		
         //Controller Background
         GUI.color = Color.grey;
         Rect rect = new Rect(Screen.width - 130, 0 - _ToggleControlPanelHeigth, 130, 200);
@@ -46,16 +68,15 @@ public class GUIManager : MonoBehaviour
         Scaler.Scale = GUI.HorizontalSlider(new Rect(-15 + Screen.width - 100, 25 - _ToggleControlPanelHeigth, 100, 25), Scaler.Scale, 0.5f, 150);
         GUI.Label(new Rect(-15 + Screen.width - 100, 5 - _ToggleControlPanelHeigth, 100, 25), "Scale Universe");
 
-        //Distance Filter
-        _DistanceFilter = GUI.HorizontalSlider(new Rect(-15 + Screen.width - 100, 65 - _ToggleControlPanelHeigth, 100, 25), _DistanceFilter, 0, 1000);
-        GUI.Label(new Rect(-15 + Screen.width - 100, 45 - _ToggleControlPanelHeigth, 100, 25), "Distance Filter");
-		
 		//Checkbox
 		_ShowNameplates = GUI.Toggle(new Rect(-15 + Screen.width - 100, 90	 - _ToggleControlPanelHeigth, 130, 20), _ShowNameplates, " Show Names"); 
 		
-		//Planet Filter
-        _NameFilter = GUI.HorizontalSlider(new Rect(-15 + Screen.width - 100, 135 - _ToggleControlPanelHeigth, 100, 25), _NameFilter, 50, 500);
-        GUI.Label(new Rect(-15 + Screen.width - 100, 115 - _ToggleControlPanelHeigth, 100, 25), "Name Filter");
+		//Name Filter
+        _NameFilter = GUI.HorizontalSlider(new Rect(-15 + Screen.width - 100, 65 - _ToggleControlPanelHeigth, 100, 25), _NameFilter, 50, 500);
+        GUI.Label(new Rect(-15 + Screen.width - 100, 45 - _ToggleControlPanelHeigth, 100, 25), "Name Filter");
+		
+		//Text Field
+		_InputText = GUI.TextField(new Rect(-15 + Screen.width - 100, 115 - _ToggleControlPanelHeigth, 100, 25), _InputText, 30);
 		
         //Toggle GUI
         if (GUI.Button(new Rect(-15 + Screen.width - 100, 165 - _ToggleControlPanelHeigth, 100, 25), "Toggle (Tab)"))
