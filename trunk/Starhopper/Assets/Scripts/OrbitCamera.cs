@@ -182,7 +182,7 @@ public class OrbitCamera : MonoBehaviour
 
         Vector3 direction = targetPosition * Scaler.Scale - Camera.mainCamera.transform.position;
         float lengthToTargetPos = direction.magnitude;
-        targetTravelTime = lengthToTargetPos / 2 / Scaler.Scale;
+        targetTravelTime = 2f + lengthToTargetPos / 70f / Scaler.Scale;
 
         rotationCooldown = targetTravelTime + 5f;
 

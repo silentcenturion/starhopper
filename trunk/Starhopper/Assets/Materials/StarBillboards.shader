@@ -68,6 +68,9 @@ Properties {
 				//c.rgb *= lerp(float3(1,0,0), float3(0,1,0), z);
 				c.rgb *= _Brightness * (1 + i.color.a);
 				c.rgb *= c.a * z;
+				float3 normalizedColor = normalize(c.rgb);
+				float mag = length(c.rgb);
+				c.rgb = lerp(normalize(pow(normalizedColor, 15)) * mag, c.rgb, saturate(1 - (z) - 0.5));
 				return c; 
 			}
 			ENDCG
