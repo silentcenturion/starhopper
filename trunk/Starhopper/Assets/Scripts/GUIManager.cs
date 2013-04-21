@@ -7,7 +7,6 @@ public class GUIManager : MonoBehaviour
     public Texture ControlPanelBackground;
 	public OrbitCamera OrbitCamera;
 
-    float _DistanceFilter = 100f;
 	float _NameFilter = 50f;
     float _ToggleControlPanelHeigth;
     bool _ToggleControlPanelUp;
@@ -54,10 +53,10 @@ public class GUIManager : MonoBehaviour
 				}
 			}
 		}
-		
+
         //Controller Background
         GUI.color = Color.grey;
-        Rect rect = new Rect(Screen.width - 130, 0 - _ToggleControlPanelHeigth, 130, 200);
+        Rect rect = new Rect(Screen.width - 160, 0 - _ToggleControlPanelHeigth, 160, Screen.height);
         GUI.DrawTexture(rect, ControlPanelBackground);
         GUI.color = Color.white;
 
@@ -65,35 +64,48 @@ public class GUIManager : MonoBehaviour
         IsMouseOverGui = rect.Contains(mousePos);
 
         //Universe Scale
-        Scaler.Scale = GUI.HorizontalSlider(new Rect(-15 + Screen.width - 100, 25 - _ToggleControlPanelHeigth, 100, 25), Scaler.Scale, 0.5f, 150);
-        GUI.Label(new Rect(-15 + Screen.width - 100, 5 - _ToggleControlPanelHeigth, 100, 25), "Scale Universe");
+        Scaler.Scale = GUI.HorizontalSlider(new Rect(-15 + Screen.width - 130, 25 - _ToggleControlPanelHeigth, 130, 25), Scaler.Scale, 0.5f, 150);
+        GUI.Label(new Rect(-15 + Screen.width - 130, 5 - _ToggleControlPanelHeigth, 130, 25), "Scale Universe");
 
 		//Checkbox
-		_ShowNameplates = GUI.Toggle(new Rect(-15 + Screen.width - 100, 90	 - _ToggleControlPanelHeigth, 130, 20), _ShowNameplates, " Show Names"); 
+		_ShowNameplates = GUI.Toggle(new Rect(-15 + Screen.width - 130, 90	 - _ToggleControlPanelHeigth, 130, 20), _ShowNameplates, " Show Names"); 
 		
 		//Name Filter
-        _NameFilter = GUI.HorizontalSlider(new Rect(-15 + Screen.width - 100, 65 - _ToggleControlPanelHeigth, 100, 25), _NameFilter, 50, 500);
-        GUI.Label(new Rect(-15 + Screen.width - 100, 45 - _ToggleControlPanelHeigth, 100, 25), "Name Filter");
-		
-		//Text Field
-		_InputText = GUI.TextField(new Rect(-15 + Screen.width - 100, 115 - _ToggleControlPanelHeigth, 100, 25), _InputText, 30);
-		
+        _NameFilter = GUI.HorizontalSlider(new Rect(-15 + Screen.width - 130, 80 - _ToggleControlPanelHeigth, 130, 25), _NameFilter, 50, 500);
+        GUI.Label(new Rect(-15 + Screen.width - 130, 60 - _ToggleControlPanelHeigth, 130, 25), "Name Filter");
+
+        //Text Field
+        GUI.Label(new Rect(-15 + Screen.width - 130, 140 - _ToggleControlPanelHeigth, 130, 25), "Search (Enter)");
+		_InputText = GUI.TextField(new Rect(-15 + Screen.width - 130, 160 - _ToggleControlPanelHeigth, 130, 25), _InputText, 30);
+
+        //Buttons
+        if (GUI.Button(new Rect(-15 + Screen.width - 130, 220 - _ToggleControlPanelHeigth, 130, 25), "Galaxy View"))
+        {
+        }
+        if (GUI.Button(new Rect(-15 + Screen.width - 130, 250 - _ToggleControlPanelHeigth, 130, 25), "Solar View"))
+        {
+        }
+        if (GUI.Button(new Rect(-15 + Screen.width - 130, 280 - _ToggleControlPanelHeigth, 130, 25), "Free View"))
+        {
+        }
+
+
         //Toggle GUI
-        if (GUI.Button(new Rect(-15 + Screen.width - 100, 165 - _ToggleControlPanelHeigth, 100, 25), "Toggle (Tab)"))
+        if (GUI.Button(new Rect(-15 + Screen.width - 130, Screen.height - 30 - _ToggleControlPanelHeigth, 130, 25), "Toggle (Tab)"))
         {
             _ToggleControlPanelUp = !_ToggleControlPanelUp;
         }
         if (_ToggleControlPanelUp)
         {
-            if (_ToggleControlPanelHeigth < 160)
-                _ToggleControlPanelHeigth += Time.deltaTime * 300f;
+            if (_ToggleControlPanelHeigth < Screen.height - 30)
+                _ToggleControlPanelHeigth += Time.deltaTime * 1500;
             else
-                _ToggleControlPanelHeigth = 160;
+                _ToggleControlPanelHeigth = Screen.height - 30;
         }
         else
         {
             if (_ToggleControlPanelHeigth > 0)
-                _ToggleControlPanelHeigth -= Time.deltaTime * 300f;
+                _ToggleControlPanelHeigth -= Time.deltaTime * 1500f;
             else
                 _ToggleControlPanelHeigth = 0;
         }
