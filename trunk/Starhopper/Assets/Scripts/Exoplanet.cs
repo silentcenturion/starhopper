@@ -17,4 +17,7 @@
 
     // R
     public float PlanetaryRadius;
-}
+	
+	//Radius
+	public float StarRadius;
+}	
