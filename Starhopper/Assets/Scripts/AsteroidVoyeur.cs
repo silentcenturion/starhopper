@@ -40,9 +40,9 @@ public class AsteroidVoyeur : MonoBehaviour {
 		}
 
         AsteroidRepresentations = new List<GameObject>();
-		for (int i = 0; i < 15; i++) {
-			AsteroidRepresentations.Add(Asteroid.CreateRepresentation(_AsteroidsByDiameter[i], Universe.AsteroidMaterial));
-		}
+//		for (int i = 0; i < 15; i++) {
+//			AsteroidRepresentations.Add(Asteroid.CreateRepresentation(_AsteroidsByDiameter[i], Universe.AsteroidMaterial));
+	//7	}
 	}
 
     public void TopDiameter()
@@ -80,10 +80,7 @@ public class AsteroidVoyeur : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetKeyDown(KeyCode.Y))
-			_Scale += 0.2f;
-		if (Input.GetKeyDown(KeyCode.U))
-			_Scale -= 0.2f;
+
 		float sunScale = 0f;
 		if (!Sun)
 			Sun = Object.FindObjectOfType(typeof(Sun)) as Sun;
