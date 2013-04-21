@@ -18,6 +18,7 @@ public class GUIManager : MonoBehaviour
     string _Spectrum;
     string _ColorIndex;
 	bool _ShowNameplates;
+    bool _ShowOnlyWithPlanets = true;
 	string _InputText;
 
     public bool IsMouseOverGui;
@@ -64,28 +65,33 @@ public class GUIManager : MonoBehaviour
         IsMouseOverGui = rect.Contains(mousePos);
 
         //Universe Scale
-        Scaler.Scale = GUI.HorizontalSlider(new Rect(-15 + Screen.width - 130, 25 - _ToggleControlPanelHeigth, 130, 25), Scaler.Scale, 0.5f, 150);
+        Scaler.Scale = GUI.HorizontalSlider(new Rect(-15 + Screen.width - 130, 25 - _ToggleControlPanelHeigth, 130, 25), Scaler.Scale, 1.5f, 150);
         GUI.Label(new Rect(-15 + Screen.width - 130, 5 - _ToggleControlPanelHeigth, 130, 25), "Scale Universe");
 
+        //Saturation
+        GUI.HorizontalSlider(new Rect(-15 + Screen.width - 130, 55 - _ToggleControlPanelHeigth, 130, 25), 1, 0.0f, 1);
+        GUI.Label(new Rect(-15 + Screen.width - 130, 35 - _ToggleControlPanelHeigth, 130, 25), "Saturation");
+
 		//Checkbox
-		_ShowNameplates = GUI.Toggle(new Rect(-15 + Screen.width - 130, 90	 - _ToggleControlPanelHeigth, 130, 20), _ShowNameplates, " Show Names"); 
+        _ShowNameplates = GUI.Toggle(new Rect(-15 + Screen.width - 130, 170 - _ToggleControlPanelHeigth, 130, 20), _ShowNameplates, " Show Names");
+        _ShowOnlyWithPlanets = GUI.Toggle(new Rect(-15 + Screen.width - 130, 190 - _ToggleControlPanelHeigth, 130, 20), _ShowOnlyWithPlanets, " Only Planets");
 		
 		//Name Filter
-        _NameFilter = GUI.HorizontalSlider(new Rect(-15 + Screen.width - 130, 80 - _ToggleControlPanelHeigth, 130, 25), _NameFilter, 50, 500);
-        GUI.Label(new Rect(-15 + Screen.width - 130, 60 - _ToggleControlPanelHeigth, 130, 25), "Name Filter");
+        _NameFilter = GUI.HorizontalSlider(new Rect(-15 + Screen.width - 130, 230 - _ToggleControlPanelHeigth, 130, 25), _NameFilter, 50, 500);
+        GUI.Label(new Rect(-15 + Screen.width - 130, 210 - _ToggleControlPanelHeigth, 130, 25), "Name Filter");
 
         //Text Field
-        GUI.Label(new Rect(-15 + Screen.width - 130, 140 - _ToggleControlPanelHeigth, 130, 25), "Search (Enter)");
-		_InputText = GUI.TextField(new Rect(-15 + Screen.width - 130, 160 - _ToggleControlPanelHeigth, 130, 25), _InputText, 30);
+        GUI.Label(new Rect(-15 + Screen.width - 130, 290 - _ToggleControlPanelHeigth, 130, 25), "Search (Enter)");
+		_InputText = GUI.TextField(new Rect(-15 + Screen.width - 130, 310 - _ToggleControlPanelHeigth, 130, 25), _InputText, 30);
 
         //Buttons
-        if (GUI.Button(new Rect(-15 + Screen.width - 130, 220 - _ToggleControlPanelHeigth, 130, 25), "Galaxy View"))
+        if (GUI.Button(new Rect(-15 + Screen.width - 130, 370 - _ToggleControlPanelHeigth, 130, 25), "Galaxy View"))
         {
         }
-        if (GUI.Button(new Rect(-15 + Screen.width - 130, 250 - _ToggleControlPanelHeigth, 130, 25), "Solar View"))
+        if (GUI.Button(new Rect(-15 + Screen.width - 130, 400 - _ToggleControlPanelHeigth, 130, 25), "Solar View"))
         {
         }
-        if (GUI.Button(new Rect(-15 + Screen.width - 130, 280 - _ToggleControlPanelHeigth, 130, 25), "Free View"))
+        if (GUI.Button(new Rect(-15 + Screen.width - 130, 430 - _ToggleControlPanelHeigth, 130, 25), "Free View"))
         {
         }
 
@@ -156,6 +162,11 @@ public class GUIManager : MonoBehaviour
 	{
 		return _ShowNameplates;
 	}
+
+    public bool ShowOnlyWithPlanets()
+    {
+        return _ShowOnlyWithPlanets;
+    }
 	
 	public float GetPlanetFilter()
 	{
