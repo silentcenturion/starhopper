@@ -16,13 +16,16 @@ public class Sun : MonoBehaviour
 		public float Scale = 1;
 		private Vector3 OriginalPos;
 		public Star Star;
-		Transform[] _Planets = new Transform[0];
+		public Transform[] _Planets = new Transform[0];
 		Exoplanet[] _PlanetData;
 		GameObject[] _PlanetOrbits;
-
+	
+	public static Sun Instance;
+	
 		// Use this for initialization
 		void Start ()
 		{
+		Instance = this;
 				_Rotation = 0;
 				Scale = 0;
 				_DelayTimer = 0;
