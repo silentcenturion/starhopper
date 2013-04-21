@@ -4,6 +4,7 @@ Properties {
 	_CloudCube ("Cloud Cube", Cube) = "white" {}
 	_Brightness ("Brightness", Float) = 1
 	_Size ("Size", Range(0, 3)) = 1
+	_Blend ("Size", Range(0, 1)) = 1
 }
 	SubShader {
 		Tags { "Queue" = "Transparent" "RenderType"="Transparent" }
@@ -24,6 +25,7 @@ Properties {
 			float _PixelSizeDistance;
 			float _MaxSize;
 			float _Size;
+			float _Blend;
 			samplerCUBE _NoiseCube;
 			samplerCUBE _CloudCube;
 			float4x4 _Rotation;
@@ -81,6 +83,9 @@ Properties {
 				c.rgb = pow(c.rgb, 5);
 				
 				c.a = saturate(saturate(1 - dot(i.texcoord, i.texcoord)) * 50);
+
+				c.a *= saturate(_Blend * 10);
+
 				return c; 
 			}
 			ENDCG

@@ -22,6 +22,7 @@ public class OrbitCamera : MonoBehaviour
     private float zoomSpeed = 5;
     private float zoomDistanceMin = 0.1f;
     private float zoomDistanceMax = 200;
+    private float smoothStartOrbitTime = 0;
 
     public bool orbitActive;
 
@@ -114,8 +115,11 @@ public class OrbitCamera : MonoBehaviour
             }
             else
             {
-                targetRotation.x += 0.02f;
-                targetRotation.y += 0.02f;
+                smoothStartOrbitTime += Time.deltaTime;
+                smoothStartOrbitTime = Mathf.Clamp01(smoothStartOrbitTime);
+
+                targetRotation.x += 0.02f * smoothStartOrbitTime;
+                targetRotation.y += 0.02f * smoothStartOrbitTime;
             }
 
             Quaternion rotation;
@@ -230,5 +234,6 @@ public class OrbitCamera : MonoBehaviour
         startPosition = transform.position;
         startRotation = transform.rotation;
         _ActiveStar = star;
+        smoothStartOrbitTime = 0;
     }
 }

@@ -16,10 +16,9 @@ public class Sun : MonoBehaviour
     public float Scale = 1;
 
     private Vector3 OriginalPos;
+    public Star Star;
 
     Transform[] _Planets = new Transform[0];
-
-	public Star Star;
 
     // Use this for initialization
     void Start()
@@ -35,7 +34,10 @@ public class Sun : MonoBehaviour
         _Rotation += Time.deltaTime;
         Quaternion rot = Quaternion.Euler(_Rotation * RotationSpeed, 0f, 0f);
         Matrix4x4 m = Matrix4x4.TRS(Vector3.zero, rot, new Vector3(1, 1, 1));
-        GetComponent<MeshRenderer>().sharedMaterial.SetMatrix("_Rotation", m);
+
+        Material material = GetComponent<MeshRenderer>().sharedMaterial;
+        material.SetMatrix("_Rotation", m);
+        material.SetFloat("_Blend", Scale);
 
         _DelayTimer += Time.deltaTime;
         if (_DelayTimer > _Delay)
@@ -81,6 +83,7 @@ public class Sun : MonoBehaviour
         
         
         Sun sun = GenerateSun(star);
+        sun.Star = star;
     }
     
     public void CreatePlanets(System.Collections.Generic.List<Exoplanet> planets)
@@ -103,10 +106,7 @@ public class Sun : MonoBehaviour
             planetParent.transform.parent = transform;
             planetParent.transform.localPosition = Vector3.zero;
             go.transform.parent = planetParent.transform;
-
-            Debug.Log(planet.PlanetaryRadius);
-
-
+            
             planetParent.transform.localRotation = Quaternion.Euler(0, Random.Range(0, 360), 0);
             go.transform.localPosition = new Vector3(planet.SemiMajorAxis, 0, 0);
             if (planet.PlanetaryRadius == 0)
@@ -122,7 +122,6 @@ public class Sun : MonoBehaviour
     {
         GameObject go = new GameObject("sun");
         Sun sun = go.AddComponent<Sun>();
-		sun.Star = star;
         MeshRenderer meshRenderer = go.AddComponent<MeshRenderer>();
 
 
