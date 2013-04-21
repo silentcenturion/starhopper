@@ -20,4 +20,7 @@
 	
 	//Radius
 	public float StarRadius;
+
+	// I
+	public float Inclination;
 }	
