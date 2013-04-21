@@ -24,6 +24,8 @@ public class OrbitCamera : MonoBehaviour
     private float zoomDistanceMax = 200;
     private float smoothStartOrbitTime = 0;
 
+    private float translationSpeed;
+
     public bool orbitActive;
 
     public float xSpeed = 120.0f;
@@ -50,6 +52,8 @@ public class OrbitCamera : MonoBehaviour
 
     void LateUpdate()
     {
+        Vector3 previousPos = transform.position;
+
         if (Input.GetKey(KeyCode.KeypadPlus))
             Scaler.Scale += 0.1f;
 
@@ -70,9 +74,9 @@ public class OrbitCamera : MonoBehaviour
                 transform.Rotate(0, 0, rotationZ);
             }
 
-            float speed = 0.01f * Scaler.Scale;
+            float speed = translationSpeed * Scaler.Scale;
             if (Input.GetKey(KeyCode.LeftShift))
-                speed = 0.1f * Scaler.Scale;
+                speed = translationSpeed * Scaler.Scale * 10;
 
             if (Input.GetKey(KeyCode.A))
                 transform.Translate(-speed, 0, 0);
@@ -165,6 +169,7 @@ public class OrbitCamera : MonoBehaviour
                 percent = currentTravelTime / targetTravelTime;
             if (percent > 1)
                 percent = 1;
+
             transform.position = Vector3.Slerp(startPosition, position, Mathf.SmoothStep(0, 1, percent));
 
             if (isTraveling)
@@ -176,6 +181,8 @@ public class OrbitCamera : MonoBehaviour
                 percent = 1;
             transform.rotation = Quaternion.Slerp(startRotation, rotation, Mathf.SmoothStep(0, 1, percent));
         }
+
+        GuiManager.Speed = Vector3.Distance(previousPos, transform.position) * (1 / Scaler.Scale);
     }
 
     public void DeactivateOrbit()
@@ -199,6 +206,7 @@ public class OrbitCamera : MonoBehaviour
                 currentZoom = 3000f;
                 startScale = Scaler.Scale;
                 targetScale = 3f;
+                translationSpeed = 1f;
                 break;
             case CameraMode.Solar:
                 zoomDistanceMax = 200f;
@@ -206,6 +214,7 @@ public class OrbitCamera : MonoBehaviour
                 currentZoom = 3.5f;
                 startScale = Scaler.Scale;
                 targetScale = 100f;
+                translationSpeed = 0.01f;
                 break;
             case CameraMode.Free:
                 zoomDistanceMax = 200f;
@@ -213,6 +222,7 @@ public class OrbitCamera : MonoBehaviour
                 currentZoom = 3.5f;
                 startScale = Scaler.Scale;
                 targetScale = 100f;
+                translationSpeed = 0.01f;
                 break;
             default:
                 break;
