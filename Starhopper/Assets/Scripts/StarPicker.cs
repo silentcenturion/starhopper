@@ -81,8 +81,10 @@ public class StarPicker : MonoBehaviour
                     continue;
 
                 Vector2 screenPos = new Vector2(screenPos3D.x, screenPos3D.y);
-                if ((screenPos - mousePos).sqrMagnitude < 20 * 20)
+                float circleSize = 20 + 500 / distance3D;
+                if ((screenPos - mousePos).sqrMagnitude < circleSize * circleSize)
                 {
+                    Debug.Log("(screenPos - mousePos).sqrMagnitude: " + (screenPos - mousePos).sqrMagnitude);
                     closestDistance = distance3D;
                     closestStar = star;
                 }
