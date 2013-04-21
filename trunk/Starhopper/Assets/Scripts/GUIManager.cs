@@ -23,6 +23,8 @@ public class GUIManager : MonoBehaviour
 
     public bool IsMouseOverGui;
 
+    public float Speed;
+
     void Start()
     {
         _InputText = "";
@@ -99,6 +101,7 @@ public class GUIManager : MonoBehaviour
             OrbitCamera.SetMode(CameraMode.Free);
         }
 
+        //GUI.Label(new Rect(1000, 800, 100, 100), "Speed: " + Speed.ToString("N2"));
 
         //Toggle GUI
         if (GUI.Button(new Rect(-15 + Screen.width - 130, Screen.height - 30 - _ToggleControlPanelHeigth, 130, 25), "Toggle (Tab)"))
