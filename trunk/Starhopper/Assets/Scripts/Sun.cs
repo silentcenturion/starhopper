@@ -13,17 +13,19 @@ public class Sun : MonoBehaviour
     private float _ScaleSpeed = 0.2f;
     private float _Delay = 0;
     private float _DelayTimer = 0;
-    private float _Scale = 1;
+    public float Scale = 1;
 
     private Vector3 OriginalPos;
 
     Transform[] _Planets = new Transform[0];
 
+	public Star Star;
+
     // Use this for initialization
     void Start()
     {
         _Rotation = 0;
-        _Scale = 0;
+        Scale = 0;
         _DelayTimer = 0;
     }
 
@@ -38,13 +40,13 @@ public class Sun : MonoBehaviour
         _DelayTimer += Time.deltaTime;
         if (_DelayTimer > _Delay)
         {
-            _Scale += Time.deltaTime * _ScaleSpeed;
+            Scale += Time.deltaTime * _ScaleSpeed;
         }
 
-        if (_Scale > 1)
-            _Scale = 1;
+        if (Scale > 1)
+            Scale = 1;
 
-        transform.localScale = Vector3.one * _Scale;
+        transform.localScale = Vector3.one * Scale;
 
         // Updat1e Orbit
         if (_Planets != null && _Planets.Length > 0)
@@ -120,6 +122,7 @@ public class Sun : MonoBehaviour
     {
         GameObject go = new GameObject("sun");
         Sun sun = go.AddComponent<Sun>();
+		sun.Star = star;
         MeshRenderer meshRenderer = go.AddComponent<MeshRenderer>();
 
 
