@@ -145,7 +145,6 @@ public class OrbitCamera : MonoBehaviour
 
             if (wasTraveling && isTraveling == false)
             {
-                //YEAH TEMPS WOOT!
                 if (_ActiveStar != null)
                 {
                     Sun.CreateSolarSystem(_ActiveStar);
