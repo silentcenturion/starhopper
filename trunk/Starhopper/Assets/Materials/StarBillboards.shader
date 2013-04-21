@@ -21,6 +21,7 @@ Properties {
 			float _Brightness;
 			float _PixelSizeDistance;
 			float _MaxSize;
+			float _Saturation;
 
 			struct appdata {
 				float4 vertex : POSITION;
@@ -70,7 +71,8 @@ Properties {
 				c.rgb *= c.a * z;
 				float3 normalizedColor = normalize(c.rgb);
 				float mag = length(c.rgb);
-				c.rgb = lerp(normalize(pow(normalizedColor, 15)) * mag, c.rgb, saturate(1 - (z) - 0.5));
+				c.rgb = lerp(normalize(pow(normalizedColor, 15 * _Saturation)) * mag, c.rgb, saturate(1 - (z) - 0.5));
+				
 				return c; 
 			}
 			ENDCG

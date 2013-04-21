@@ -5,9 +5,9 @@ using System.Collections;
 public class GUIManager : MonoBehaviour
 {
     public Texture ControlPanelBackground;
-	public OrbitCamera OrbitCamera;
+    public OrbitCamera OrbitCamera;
 
-	float _NameFilter = 50f;
+    float _NameFilter = 50f;
     float _ToggleControlPanelHeigth;
     bool _ToggleControlPanelUp;
     float _HeaderAlpha;
@@ -17,43 +17,44 @@ public class GUIManager : MonoBehaviour
     string _Magnitude;
     string _Spectrum;
     string _ColorIndex;
-	bool _ShowNameplates;
+    bool _ShowNameplates;
     bool _ShowOnlyWithPlanets = true;
-	string _InputText;
+    string _InputText;
 
     public bool IsMouseOverGui;
 
     void Start()
     {
-		_InputText = "";
+        _InputText = "";
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Tab))
             _ToggleControlPanelUp = !_ToggleControlPanelUp;
-		
-		
+
+
     }
 
     void OnGUI()
-    {		
-		if( Event.current.keyCode == KeyCode.Tab || Event.current.character == '\t')
-			Event.current.Use();
-		if( Event.current.keyCode == KeyCode.Return || Event.current.character == '\n')
-		{
-			foreach(Star star in StarPicker.Stars)
-			{
-				if(_InputText.ToLower() == star.GetName().ToLower() )
-				{
-					OrbitCamera.OrbitLocation(star);
-					SetStarFocus(star);
-					GUI.SetNextControlName("");
-					GUI.FocusControl("");
-					break;
-				}
-			}
-		}
+    {
+        if (Event.current.keyCode == KeyCode.Tab || Event.current.character == '\t')
+            Event.current.Use();
+        if (Event.current.keyCode == KeyCode.Return || Event.current.character == '\n')
+        {
+            foreach (Star star in StarPicker.Stars)
+            {
+                if (_InputText.ToLower() == star.GetName().ToLower())
+                {
+                    OrbitCamera.SetMode(CameraMode.Free);
+                    OrbitCamera.OrbitLocation(star);
+                    SetStarFocus(star);
+                    GUI.SetNextControlName("");
+                    GUI.FocusControl("");
+                    break;
+                }
+            }
+        }
 
         //Controller Background
         GUI.color = Color.grey;
@@ -69,30 +70,33 @@ public class GUIManager : MonoBehaviour
         GUI.Label(new Rect(-15 + Screen.width - 130, 5 - _ToggleControlPanelHeigth, 130, 25), "Scale Universe");
 
         //Saturation
-        GUI.HorizontalSlider(new Rect(-15 + Screen.width - 130, 55 - _ToggleControlPanelHeigth, 130, 25), 1, 0.0f, 1);
+        Universe.Saturation = GUI.HorizontalSlider(new Rect(-15 + Screen.width - 130, 55 - _ToggleControlPanelHeigth, 130, 25), Universe.Saturation, 0.0f, 4f);
         GUI.Label(new Rect(-15 + Screen.width - 130, 35 - _ToggleControlPanelHeigth, 130, 25), "Saturation");
 
-		//Checkbox
+        //Checkbox
         _ShowNameplates = GUI.Toggle(new Rect(-15 + Screen.width - 130, 170 - _ToggleControlPanelHeigth, 130, 20), _ShowNameplates, " Show Names");
         _ShowOnlyWithPlanets = GUI.Toggle(new Rect(-15 + Screen.width - 130, 190 - _ToggleControlPanelHeigth, 130, 20), _ShowOnlyWithPlanets, " Only Planets");
-		
-		//Name Filter
+
+        //Name Filter
         _NameFilter = GUI.HorizontalSlider(new Rect(-15 + Screen.width - 130, 230 - _ToggleControlPanelHeigth, 130, 25), _NameFilter, 50, 500);
         GUI.Label(new Rect(-15 + Screen.width - 130, 210 - _ToggleControlPanelHeigth, 130, 25), "Name Filter");
 
         //Text Field
         GUI.Label(new Rect(-15 + Screen.width - 130, 290 - _ToggleControlPanelHeigth, 130, 25), "Search (Enter)");
-		_InputText = GUI.TextField(new Rect(-15 + Screen.width - 130, 310 - _ToggleControlPanelHeigth, 130, 25), _InputText, 30);
+        _InputText = GUI.TextField(new Rect(-15 + Screen.width - 130, 310 - _ToggleControlPanelHeigth, 130, 25), _InputText, 30);
 
         //Buttons
         if (GUI.Button(new Rect(-15 + Screen.width - 130, 370 - _ToggleControlPanelHeigth, 130, 25), "Galaxy View"))
         {
+            OrbitCamera.SetMode(CameraMode.Galaxy);
         }
         if (GUI.Button(new Rect(-15 + Screen.width - 130, 400 - _ToggleControlPanelHeigth, 130, 25), "Solar View"))
         {
+            OrbitCamera.SetMode(CameraMode.Solar);
         }
         if (GUI.Button(new Rect(-15 + Screen.width - 130, 430 - _ToggleControlPanelHeigth, 130, 25), "Free View"))
         {
+            OrbitCamera.SetMode(CameraMode.Free);
         }
 
 
@@ -144,34 +148,34 @@ public class GUIManager : MonoBehaviour
         GUI.Label(new Rect(15, Screen.height * 0.3f + 30, 100, 25), "Magnitude:", informationStyle);
         GUI.Label(new Rect(15, Screen.height * 0.3f + 60, 100, 25), "Spectrum:", informationStyle);
         GUI.Label(new Rect(15, Screen.height * 0.3f + 90, 100, 25), "Color Index:", informationStyle);
-		
+
         informationStyle.normal.textColor = new Color(255, 0, 255, _HeaderAlpha);
         GUI.Label(new Rect(150, Screen.height * 0.3f, 0, 25), _Distance, informationStyle);
-        GUI.Label(new Rect(150, Screen.height * 0.3f + 30, 100, 25),  _Magnitude, informationStyle);
+        GUI.Label(new Rect(150, Screen.height * 0.3f + 30, 100, 25), _Magnitude, informationStyle);
         GUI.Label(new Rect(150, Screen.height * 0.3f + 60, 100, 25), _Spectrum, informationStyle);
         GUI.Label(new Rect(150, Screen.height * 0.3f + 90, 100, 25), _ColorIndex, informationStyle);
-		
-		}
+
+    }
 
     public void HideStarFocus()
     {
         _HeaderUp = false;
     }
-	
-	public bool ShowPlanets()
-	{
-		return _ShowNameplates;
-	}
+
+    public bool ShowPlanets()
+    {
+        return _ShowNameplates;
+    }
 
     public bool ShowOnlyWithPlanets()
     {
         return _ShowOnlyWithPlanets;
     }
-	
-	public float GetPlanetFilter()
-	{
-		return _NameFilter;
-	}
+
+    public float GetPlanetFilter()
+    {
+        return _NameFilter;
+    }
 
     public void SetStarFocus(Star star)
     {

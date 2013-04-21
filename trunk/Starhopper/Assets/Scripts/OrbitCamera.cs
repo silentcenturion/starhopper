@@ -3,9 +3,14 @@ using System.Collections;
 
 public class OrbitCamera : MonoBehaviour
 {
-    private float x = 0.0f;
-    private float y = 0.0f;
-    private float z = 0.0f;
+    private Quaternion startRotation;
+    private Vector3 targetRotation;
+
+    private Vector3 startPosition;
+    private Vector3 targetPosition;
+
+    private float startScale;
+    private float targetScale;
 
     private StarMesh[] starMeshes;
     private Star _ActiveStar;
@@ -14,29 +19,28 @@ public class OrbitCamera : MonoBehaviour
     private float currentTravelTime;
     private float targetTravelTime;
 
-    private Vector3 startPosition;
-    private Quaternion startRotation;
+    private float zoomSpeed = 5;
+    private float zoomDistanceMin = 0.1f;
+    private float zoomDistanceMax = 200;
 
     public bool orbitActive;
 
-    public Vector3 targetPosition;
     public float xSpeed = 120.0f;
     public float ySpeed = 120.0f;
 
     public float yMinLimit = -20f;
     public float yMaxLimit = 80f;
 
-    public float currentZoom = 50.0f;
-    public float zoomSpeed = 5;
-    public float zoomDistanceMin = 0.1f;
-    public float zoomDistanceMax = 200;
+    public float currentZoom = 3.5f;
+
+    public GUIManager GuiManager;
 
     // Use this for initialization
     void Start()
     {
         Vector3 angles = transform.eulerAngles;
-        x = angles.y;
-        y = angles.x;
+        targetRotation.x = angles.y;
+        targetRotation.y = angles.x;
 
         // Make the rigid body not change rotation
         if (rigidbody)
@@ -85,9 +89,9 @@ public class OrbitCamera : MonoBehaviour
                 transform.Translate(0, speed, 0);
 
             targetPosition = transform.position + transform.forward * currentZoom;
-            x = transform.eulerAngles.y;
-            y = transform.eulerAngles.x;
-            z = transform.eulerAngles.z;
+            targetRotation.x = transform.eulerAngles.y;
+            targetRotation.y = transform.eulerAngles.x;
+            targetRotation.z = transform.eulerAngles.z;
         }
         else if (orbitActive)
         {
@@ -99,8 +103,8 @@ public class OrbitCamera : MonoBehaviour
                 if (Input.GetKey(KeyCode.Space) ||
                     Input.GetKey(KeyCode.Mouse2))
                 {
-                    x += xDelta;
-                    y -= yDelta;
+                    targetRotation.x += xDelta;
+                    targetRotation.y -= yDelta;
                 }
             }
 
@@ -110,8 +114,8 @@ public class OrbitCamera : MonoBehaviour
             }
             else
             {
-                x += 0.02f;
-                y += 0.02f;
+                targetRotation.x += 0.02f;
+                targetRotation.y += 0.02f;
             }
 
             Quaternion rotation;
@@ -123,13 +127,13 @@ public class OrbitCamera : MonoBehaviour
                 direction.Normalize();
 
                 rotation = Quaternion.LookRotation(direction);
-                x = rotation.eulerAngles.y;
-                y = rotation.eulerAngles.x;
-                z = rotation.eulerAngles.z;
+                targetRotation.x = rotation.eulerAngles.y;
+                targetRotation.y = rotation.eulerAngles.x;
+                targetRotation.z = rotation.eulerAngles.z;
             }
             else
             {
-                rotation = Quaternion.Euler(y, x, z);
+                rotation = Quaternion.Euler(targetRotation.y, targetRotation.x, targetRotation.z);
                 startPosition = transform.position;
                 startRotation = transform.rotation;
             }
@@ -159,6 +163,9 @@ public class OrbitCamera : MonoBehaviour
                 percent = 1;
             transform.position = Vector3.Slerp(startPosition, position, Mathf.SmoothStep(0, 1, percent));
 
+            if (isTraveling)
+                Scaler.Scale = Mathf.SmoothStep(startScale, targetScale, percent);
+
             if (targetTravelTime > 0)
                 percent = currentTravelTime / (targetTravelTime * 0.5f);
             if (percent > 1)
@@ -171,6 +178,41 @@ public class OrbitCamera : MonoBehaviour
     {
         orbitActive = false;
         _ActiveStar = null;
+    }
+
+    public void SetMode(CameraMode mode)
+    {
+        OrbitLocation(StarPicker.Stars[0]);
+        GuiManager.HideStarFocus();
+        currentTravelTime = 0;
+        targetTravelTime = 5f;
+
+        switch (mode)
+        {
+            case CameraMode.Galaxy:
+                zoomDistanceMax = 5000f;
+                zoomSpeed = 5000f;
+                currentZoom = 3000f;
+                startScale = Scaler.Scale;
+                targetScale = 3f;
+                break;
+            case CameraMode.Solar:
+                zoomDistanceMax = 200f;
+                zoomSpeed = 5f;
+                currentZoom = 3.5f;
+                startScale = Scaler.Scale;
+                targetScale = 100f;
+                break;
+            case CameraMode.Free:
+                zoomDistanceMax = 200f;
+                zoomSpeed = 5f;
+                currentZoom = 3.5f;
+                startScale = Scaler.Scale;
+                targetScale = 100f;
+                break;
+            default:
+                break;
+        }
     }
 
     public void OrbitLocation(Star star)
