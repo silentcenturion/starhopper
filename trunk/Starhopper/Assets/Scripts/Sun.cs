@@ -5,24 +5,15 @@ using UnityEditor;
 using System.Collections;
 
 
-public class Planet
-{
-    public float Distance;
-    public float Size;
-
-    public Planet(float distance, float size)
-    {
-        Distance = distance;
-        Size = size;
-    }
-
-}
-
 public class Sun : MonoBehaviour
 {
     float _Rotation;
     public float RotationSpeed = 3;
-    public float Scale = 1;
+
+    private float _ScaleSpeed = 0.2f;
+    private float _Delay = 0;
+    private float _DelayTimer = 0;
+    private float _Scale = 1;
 
     private Vector3 OriginalPos;
 
@@ -32,6 +23,8 @@ public class Sun : MonoBehaviour
     void Start()
     {
         _Rotation = 0;
+        _Scale = 0;
+        _DelayTimer = 0;
     }
 
     // Update is called once per frame
@@ -42,7 +35,16 @@ public class Sun : MonoBehaviour
         Matrix4x4 m = Matrix4x4.TRS(Vector3.zero, rot, new Vector3(1, 1, 1));
         GetComponent<MeshRenderer>().sharedMaterial.SetMatrix("_Rotation", m);
 
-        transform.localScale = Vector3.one * Scale;
+        _DelayTimer += Time.deltaTime;
+        if (_DelayTimer > _Delay)
+        {
+            _Scale += Time.deltaTime * _ScaleSpeed;
+        }
+
+        if (_Scale > 1)
+            _Scale = 1;
+
+        transform.localScale = Vector3.one * _Scale;
 
         // Updat1e Orbit
         if (_Planets != null && _Planets.Length > 0)
@@ -53,7 +55,7 @@ public class Sun : MonoBehaviour
                 planet.transform.parent.rotation = Quaternion.Euler(0, euler.y + Time.deltaTime * 50, 0);
             }
         }
-
+        
         transform.position = OriginalPos * Scaler.Scale;
     }
 
@@ -74,15 +76,8 @@ public class Sun : MonoBehaviour
         {
             DestroyImmediate((solarSystem as Sun).gameObject);
         }
-
-
-        Planet[] planets = new Planet[]
-        {
-            new Planet(1f, 0.2f),            
-            new Planet(3f, 0.1f),            
-            new Planet(6f, 0.4f)
-        };
-
+        
+        
         Sun sun = GenerateSun(star);
     }
     
@@ -107,6 +102,9 @@ public class Sun : MonoBehaviour
             planetParent.transform.localPosition = Vector3.zero;
             go.transform.parent = planetParent.transform;
 
+            Debug.Log(planet.SemiMajorAxis);
+
+
             planetParent.transform.localRotation = Quaternion.Euler(0, Random.Range(0, 360), 0);
             go.transform.localPosition = new Vector3(planet.PlanetaryRadius, 0, 0);
             go.transform.localScale = Vector3.one * 1;
@@ -125,7 +123,9 @@ public class Sun : MonoBehaviour
         Universe universe = Object.FindObjectOfType(typeof(Universe)) as Universe;
         meshRenderer.sharedMaterial = universe.SunMaterial;
 
-        Mesh mesh = GenerateMesh(Color.white);
+        Color color = StarMesh.GetStarColor(star);
+
+        Mesh mesh = GenerateMesh(color);
         MeshFilter meshFilter = go.AddComponent<MeshFilter>();
         meshFilter.sharedMesh = mesh;
 
@@ -135,6 +135,8 @@ public class Sun : MonoBehaviour
         {
             sun.CreatePlanets(star.Planets);
         }
+
+        sun.transform.localScale = Vector3.zero;
 
         return sun;
     }

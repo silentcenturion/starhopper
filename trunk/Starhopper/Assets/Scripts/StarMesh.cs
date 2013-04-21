@@ -37,23 +37,6 @@ public class StarMesh : MonoBehaviour
     }
 #endif
 
-//#if UNITY_EDITOR
-//    [MenuItem("Space App Challenge/Create Sun")]
-//    static void CreateSun()
-//    {
-//        Star[] stars = LoadStars.Load();
-//        Star[] sun = new Star[] { stars[0] };
-
-//        float min = float.MaxValue;
-//        float max = float.MinValue;
-//        GetMinMaxAbsMag(stars, ref min, ref max);
-
-//        GameObject go =  GenerateMesh(sun, 0, 1, min, max, true);
-//        go.name = "sunMesh";
-//        go.transform.position = new Vector3(sun[0].X, sun[0].Y, sun[0].Z);
-//    }
-//#endif
-
     static Color getColor(int r, int g, int b)
     {
         return new Color((float)r / 255f, (float)g / 255f, (float)b / 255f, 1);
@@ -87,21 +70,26 @@ public class StarMesh : MonoBehaviour
      { "y", 9 },   
     };
 
-    static Color GetStarColor(char theChar, string spectrum)
+    public static Color GetStarColor(Star star)
     {
-        int colorModifier = 0;
-        if (spectrum.Length > 1 && char.IsDigit(spectrum[1]))
-            int.TryParse(spectrum[1].ToString(), out colorModifier);
-        int colorIndex;
-        if (_ClassificationToColorIndex.TryGetValue(char.ToLowerInvariant(theChar).ToString(), out colorIndex))
+        Color color = Color.white;
+        if (star.Spectrum != null && star.Spectrum.Length > 0)
         {
-            Color color1 = colors[colorIndex];
-            if (colorIndex == colors.Length - 1)
-                return color1;
-            Color color2 = colors[colorIndex + 1];
-            return Color.Lerp(color1, color2, (float)colorModifier / 10);
+            string spectrum = star.Spectrum;
+            int colorModifier = 0;
+            if (spectrum.Length > 1 && char.IsDigit(spectrum[1]))
+                int.TryParse(spectrum[1].ToString(), out colorModifier);
+            int colorIndex;
+            if (_ClassificationToColorIndex.TryGetValue(char.ToLowerInvariant(star.Spectrum[0]).ToString(), out colorIndex))
+            {
+                Color color1 = colors[colorIndex];
+                if (colorIndex == colors.Length - 1)
+                    return color1;
+                Color color2 = colors[colorIndex + 1];
+                color = Color.Lerp(color1, color2, (float)colorModifier / 10);
+            }
         }
-        return new Color(1, 1, 1, 1);
+        return color;
     }
 
     static void GetMinMaxAbsMag(Star[] star, ref float min, ref float max)
@@ -139,10 +127,7 @@ public class StarMesh : MonoBehaviour
             int vert3 = vertIndex++;
             int vert4 = vertIndex++;
             
-            Color color = Color.white;
-            string spectrum = stars[i + offset].Spectrum;
-            if (spectrum.Length > 0)
-                color = GetStarColor(spectrum[0], spectrum);
+            Color color = GetStarColor(stars[i + offset]);
 
             // Abs MAg
             float absMag = stars[i + offset].AbsMag;

@@ -8,6 +8,7 @@ public class OrbitCamera : MonoBehaviour
     private float z = 0.0f;
 
     private StarMesh[] starMeshes;
+    private Star _ActiveStar;
 
     private float rotationCooldown;
     private float currentTravelTime;
@@ -94,7 +95,7 @@ public class OrbitCamera : MonoBehaviour
             float yDelta = Input.GetAxis("Mouse Y") * ySpeed * 0.02f;
             if (xDelta != 0 || yDelta != 0)
             {
-                rotationCooldown = 0.5f;
+                //rotationCooldown = 0.5f;
                 if (Input.GetKey(KeyCode.Space) ||
                     Input.GetKey(KeyCode.Mouse2))
                 {
@@ -138,7 +139,18 @@ public class OrbitCamera : MonoBehaviour
             Vector3 negDistance = new Vector3(0.0f, 0.0f, -currentZoom);
             Vector3 position = rotation * negDistance + targetPosition * Scaler.Scale;
 
+            bool wasTraveling = currentTravelTime < targetTravelTime;
             currentTravelTime += Time.deltaTime;
+            bool isTraveling = currentTravelTime < targetTravelTime;
+
+            if (wasTraveling && isTraveling == false)
+            {
+                //YEAH TEMPS WOOT!
+                if (_ActiveStar != null)
+                {
+                    Sun.CreateSolarSystem(_ActiveStar);
+                }
+            }
 
             float percent = 1;
 
@@ -159,6 +171,7 @@ public class OrbitCamera : MonoBehaviour
     public void DeactivateOrbit()
     {
         orbitActive = false;
+        _ActiveStar = null;
     }
 
     public void OrbitLocation(Star star)
@@ -171,7 +184,10 @@ public class OrbitCamera : MonoBehaviour
         float lengthToTargetPos = direction.magnitude;
         targetTravelTime = lengthToTargetPos / 2 / Scaler.Scale;
 
+        rotationCooldown = targetTravelTime + 5f;
+
         startPosition = transform.position;
         startRotation = transform.rotation;
+        _ActiveStar = star;
     }
 }
