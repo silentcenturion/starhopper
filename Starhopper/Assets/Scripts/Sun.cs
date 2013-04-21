@@ -62,8 +62,7 @@ public class Sun : MonoBehaviour
         
         transform.position = OriginalPos * Scaler.Scale;
     }
-
-
+    
 
 #if UNITY_EDITOR
     [MenuItem("Space App Challenge/Create SolarSystem")]
@@ -85,6 +84,15 @@ public class Sun : MonoBehaviour
         Sun sun = GenerateSun(star);
         sun.Star = star;
     }
+
+    public static void RemoveSolarSystems()
+    {
+        Object[] solarSystems = Object.FindObjectsOfType(typeof(Sun));
+        foreach (var solarSystem in solarSystems)
+        {
+            DestroyImmediate((solarSystem as Sun).gameObject);
+        }
+    }
     
     public void CreatePlanets(System.Collections.Generic.List<Exoplanet> planets)
     {
@@ -94,6 +102,7 @@ public class Sun : MonoBehaviour
         for (int i = 0; i < planets.Count; i++)
         {
             Exoplanet planet = planets[i];
+            Debug.Log(planet.OrbitalPeriod);
             GameObject planetParent = new GameObject("planetParent");
             GameObject go = new GameObject("planet");
             MeshFilter meshFilter = go.AddComponent<MeshFilter>();
@@ -101,8 +110,7 @@ public class Sun : MonoBehaviour
             Mesh mesh = GenerateMesh(Color.white);
             meshFilter.sharedMesh = mesh;
             meshRenderer.sharedMaterial = universe.PlanetMaterial;
-
-
+            
             planetParent.transform.parent = transform;
             planetParent.transform.localPosition = Vector3.zero;
             go.transform.parent = planetParent.transform;
@@ -116,6 +124,58 @@ public class Sun : MonoBehaviour
 
             _Planets[i] = go.transform;
         }
+    }
+
+    static System.Collections.Generic.List<Exoplanet> GetOurPlanets()
+    {
+        System.Collections.Generic.List<Exoplanet> planets = new System.Collections.Generic.List<Exoplanet>();
+
+        Exoplanet merkurius = new Exoplanet();
+        Exoplanet venus = new Exoplanet();
+        Exoplanet earth = new Exoplanet();
+        Exoplanet mars = new Exoplanet();
+        Exoplanet jupiter = new Exoplanet();
+        Exoplanet saturnus = new Exoplanet();
+        Exoplanet uranus = new Exoplanet();
+        Exoplanet neptunus = new Exoplanet();
+
+        merkurius.PlanetaryRadius = 0.03413f;
+        venus.PlanetaryRadius = 0.084639f;
+        earth.PlanetaryRadius = 0.089213f;
+        mars.PlanetaryRadius = 0.047516f;
+        jupiter.PlanetaryRadius = 1f;
+        saturnus.PlanetaryRadius = 0.843003f;
+        uranus.PlanetaryRadius = 0.357509f;
+        neptunus.PlanetaryRadius = 0.346388f;
+
+        merkurius.SemiMajorAxis = 0.387098f;
+        venus.SemiMajorAxis = 0.723327f;
+        earth.SemiMajorAxis = 1f;
+        mars.SemiMajorAxis = 1.523679f;
+        jupiter.SemiMajorAxis = 5.204267f;
+        saturnus.SemiMajorAxis = 9.58201720f;
+        uranus.SemiMajorAxis = 19.22941195f;
+        neptunus.SemiMajorAxis = 30f;
+
+        merkurius.OrbitalPeriod = 1;
+        venus.OrbitalPeriod = 1;
+        earth.OrbitalPeriod = 1;
+        mars.OrbitalPeriod = 1;
+        jupiter.OrbitalPeriod = 1;
+        saturnus.OrbitalPeriod = 1;
+        uranus.OrbitalPeriod = 1;
+        neptunus.OrbitalPeriod = 1;
+
+        planets.Add(merkurius);
+        planets.Add(venus);
+        planets.Add(earth);
+        planets.Add(mars);
+        planets.Add(jupiter);
+        planets.Add(saturnus);
+        planets.Add(uranus);
+        planets.Add(neptunus);
+
+        return planets;
     }
 
     static Sun GenerateSun(Star star)
@@ -135,10 +195,16 @@ public class Sun : MonoBehaviour
         meshFilter.sharedMesh = mesh;
 
         sun.OriginalPos = new Vector3(star.X, star.Y, star.Z);
-        
-        if (star.Planets != null && star.Planets.Count > 0)
+
+        System.Collections.Generic.List<Exoplanet> planets = star.Planets;
+        if (star.GetName() == "Sol")
         {
-            sun.CreatePlanets(star.Planets);
+            planets = GetOurPlanets();
+        }
+
+        if (planets != null && planets.Count > 0)
+        {
+            sun.CreatePlanets(planets);
         }
 
         sun.transform.localScale = Vector3.zero;

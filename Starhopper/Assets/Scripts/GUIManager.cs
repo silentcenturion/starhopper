@@ -94,6 +94,7 @@ public class GUIManager : MonoBehaviour
         }
         if (GUI.Button(new Rect(-15 + Screen.width - 130, 400 - _ToggleControlPanelHeigth, 130, 25), "Solar View"))
         {
+            Sun.RemoveSolarSystems();
             OrbitCamera.SetMode(CameraMode.Solar);
         }
         if (GUI.Button(new Rect(-15 + Screen.width - 130, 430 - _ToggleControlPanelHeigth, 130, 25), "Free View"))
