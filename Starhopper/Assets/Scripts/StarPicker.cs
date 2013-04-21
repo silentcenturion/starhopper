@@ -71,6 +71,10 @@ public class StarPicker : MonoBehaviour
             if (distance3D < closestDistance &&
                 distance3D < 200 * 200 * Scaler.Scale)
             {
+                Bounds bounds = new Bounds(starPos, Vector3.one);
+                if (GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(Camera.main), bounds) == false)
+                    continue;
+
                 Vector3 screenPos3D = Camera.mainCamera.WorldToScreenPoint(starPos);
                 screenPos3D.y = Screen.height - screenPos3D.y;
                 if (screenPos3D.z < 0)

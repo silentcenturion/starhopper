@@ -2,19 +2,13 @@
 using System.IO;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using UnityEngine;
 
 public static class LoadExoplanet
 {
     public static void Load(Star[] stars)
     {
-        Stopwatch sw = new Stopwatch();
-
-        sw.Start();
-
-        UnityEngine.Debug.Log(sw.Elapsed.TotalMilliseconds);
-
-        Exoplanet[] exoplanets = LoadExoplanets(stars);
+        Exoplanet[] exoplanets = LoadExoplanets();
         Dictionary<int, List<int>> planetsByHDID = new Dictionary<int, List<int>>();
         Dictionary<int, List<int>> planetsByHiPID = new Dictionary<int, List<int>>();
         Dictionary<int, List<int>> planetsByHDR = new Dictionary<int, List<int>>();
@@ -130,29 +124,31 @@ public static class LoadExoplanet
         UnityEngine.Debug.Log("planets with stars: " + planetsWithStars);
     }
 
-    public static Exoplanet[] LoadExoplanets(Star[] stars)
+    public static Exoplanet[] LoadExoplanets()
     {
-        Exoplanet[] exoplanets = new Exoplanet[10000];
         Dictionary<string, int> labels;
 
-        StreamReader sr = new StreamReader("exoplanets.csv");
+        TextAsset planetDatabase = (TextAsset)Resources.Load("exoplanets");
+
+        string[] lines = planetDatabase.text.Split('\n');
+        int numberOfPlanets = lines.Length - 1;
+        Debug.Log("Parsing " + numberOfPlanets + " planets...");
+        Exoplanet[] exoplanets = new Exoplanet[numberOfPlanets];
 
         // The first line has captions about the data...
-        labels = ParseLabels(sr.ReadLine());
+        labels = ParseLabels(lines[0]);
 
-        int currentExoplanet = 0;
-        while (sr.EndOfStream == false)
+        int currentPlanet = 0;
+        for (int lineIndex = 1; lineIndex < lines.Length - 1; lineIndex++) // skip first line that contains headers
         {
-            string line = sr.ReadLine();
-            exoplanets[currentExoplanet] = ParseExoplanet(labels, line);
+            exoplanets[currentPlanet++] = ParseExoplanet(labels, lines[lineIndex]);
 
-            currentExoplanet++;
-
-            if (currentExoplanet > exoplanets.Length)
+            if (currentPlanet > exoplanets.Length)
                 break;
         }
+        Debug.Log(currentPlanet + " planets parsed!");
+        Array.Resize(ref exoplanets, currentPlanet);
 
-        Array.Resize(ref exoplanets, currentExoplanet);
         return exoplanets;
     }
 
