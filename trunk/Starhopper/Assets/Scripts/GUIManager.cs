@@ -105,10 +105,6 @@ public class GUIManager : MonoBehaviour
         }
         if (OrbitCamera.CurrentCameraMode == CameraMode.Solar)
         {
-            if (GUI.Button(new Rect(-15 + Screen.width - 130, 500 - _ToggleControlPanelHeigth, 130, 25), "Step Astroid"))
-            {
-                //Set AStroiud
-            }
             if (GUI.Button(new Rect(-15 + Screen.width - 130, 530 - _ToggleControlPanelHeigth, 130, 25), "Top Diameter"))
             {
                 AsteroidVoyeur.Instance.TopDiameter();

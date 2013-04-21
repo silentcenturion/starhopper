@@ -50,6 +50,8 @@ public class OrbitCamera : MonoBehaviour
         // Make the rigid body not change rotation
         if (rigidbody)
             rigidbody.freezeRotation = true;
+
+        SetMode(CameraMode.Solar);
     }
 
     void LateUpdate()
