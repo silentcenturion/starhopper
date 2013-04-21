@@ -13,6 +13,7 @@ public class StarPicker : MonoBehaviour
     {
         Stars = LoadStars.Load();
 
+        OrbitCamera.SetMode(CameraMode.Free);
         OrbitCamera.OrbitLocation(Stars[0]);
         GuiManager.SetStarFocus(Stars[0]);
     }
@@ -33,6 +34,7 @@ public class StarPicker : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.H) ||
             Input.GetKeyDown(KeyCode.Home))
         {
+            OrbitCamera.SetMode(CameraMode.Free);
             OrbitCamera.OrbitLocation(Stars[0]);
             GuiManager.SetStarFocus(Stars[0]);
         }
@@ -50,6 +52,7 @@ public class StarPicker : MonoBehaviour
             Star closestStar;
             if (PickStar(out closestStar))
             {
+                OrbitCamera.SetMode(CameraMode.Free);
                 OrbitCamera.OrbitLocation(closestStar);
                 GuiManager.SetStarFocus(closestStar);
             }
