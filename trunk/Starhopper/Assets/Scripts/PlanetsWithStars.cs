@@ -10,10 +10,19 @@ public class PlanetsWithStars : MonoBehaviour
         public Vector2 ScreenPos;
         public float Distance;
     }
+    struct PlanetNameData
+    {
+        public Exoplanet Planet;
+        public Vector2 ScreenPos;
+        public float Distance;
+    }
+
+    public static Star PickedStar;
 
     public GUIManager guiManager;
 
     private List<NameData> _DataList;
+    private List<PlanetNameData> _PlanetDataList;
 
     GUIStyle planetStyle;
 
@@ -22,16 +31,17 @@ public class PlanetsWithStars : MonoBehaviour
     {
         LoadExoplanet.Load(StarPicker.Stars);
         _DataList = new List<NameData>();
+        _PlanetDataList = new List<PlanetNameData>();
         planetStyle = new GUIStyle();
     }
 
     void LateUpdate()
     {
+        Vector3 camPos = Camera.mainCamera.transform.position;
+
         _DataList.Clear();
         if (guiManager.ShowPlanets())
         {
-            Vector3 camPos = Camera.mainCamera.transform.position;
-
             foreach (Star star in StarPicker.Stars)
             {
                 List<Exoplanet> planets = star.Planets;
@@ -42,7 +52,11 @@ public class PlanetsWithStars : MonoBehaviour
                 Vector3 starPos = new Vector3(star.X, star.Y, star.Z) * Scaler.Scale;
                 float distance3D = Vector3.SqrMagnitude(camPos - starPos);
 
-                if (distance3D < guiManager.GetPlanetFilter() * guiManager.GetPlanetFilter() * Scaler.Scale)
+                float planetFilter = guiManager.GetPlanetFilter();
+                if (guiManager.ShowOnlyWithPlanets())
+                    planetFilter *= 100;
+
+                if (distance3D < planetFilter * planetFilter * Scaler.Scale)
                 {
                     Bounds bounds = new Bounds(starPos, Vector3.one);
                     if (GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(Camera.main), bounds) == false)
@@ -65,19 +79,65 @@ public class PlanetsWithStars : MonoBehaviour
                 }
             }
         }
+
+        _PlanetDataList.Clear();
+        if (PickedStar != null && PickedStar.Planets.Count > 0)
+        {
+            for (int i = 0; i < Sun.Instance._Planets.Length; i++ )
+            {
+                Transform planetTransform = Sun.Instance._Planets[i];
+                Exoplanet planet = PickedStar.Planets[i];
+
+                Vector3 planetPos = planetTransform.position;
+                float distance3D = Vector3.SqrMagnitude(camPos - planetPos);
+
+                //if (distance3D < guiManager.GetPlanetFilter() * guiManager.GetPlanetFilter() * Scaler.Scale)
+                {
+                    Bounds bounds = new Bounds(planetPos, Vector3.one);
+                    if (GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(Camera.main), bounds) == false)
+                        continue;
+
+                    Vector3 screenPos3D = Camera.mainCamera.WorldToScreenPoint(planetPos);
+                    screenPos3D.y = Screen.height - screenPos3D.y;
+
+                    if (screenPos3D.z < 0)
+                        continue;
+
+                    float distance = Vector3.Distance(planetPos, camPos);
+                    Vector2 screenPos = new Vector2(screenPos3D.x, screenPos3D.y);
+
+                    PlanetNameData newData = new PlanetNameData();
+                    newData.ScreenPos = screenPos;
+                    newData.Planet = planet;
+                    newData.Distance = distance;
+                    _PlanetDataList.Add(newData);
+                }
+            }
+        }
+
     }
 
     void OnGUI()
     {
+        float planetFilter = guiManager.GetPlanetFilter();
+        if (guiManager.ShowOnlyWithPlanets())
+            planetFilter *= 100;
+
         foreach (NameData data in _DataList)
         {
-            planetStyle.normal.textColor = new Color(255, 255, 255, 1 - (data.Distance / guiManager.GetPlanetFilter()));
+            planetStyle.normal.textColor = new Color(255, 255, 255, 1 - (data.Distance / planetFilter));
 
             if (data.Star.Planets.Count > 0)
                 GUI.Label(new Rect(data.ScreenPos.x, data.ScreenPos.y, 200, 100), data.Star.GetName() + " (Planets: " + data.Star.Planets.Count + ")", planetStyle);
             else
                 GUI.Label(new Rect(data.ScreenPos.x, data.ScreenPos.y, 200, 100), data.Star.GetName(), planetStyle);
+        }
 
+        foreach (PlanetNameData data in _PlanetDataList)
+        {
+            planetStyle.normal.textColor = new Color(255, 255, 255, 1 - (data.Distance / planetFilter));
+
+            GUI.Label(new Rect(data.ScreenPos.x, data.ScreenPos.y, 200, 100), data.Planet.PlanetName, planetStyle);
         }
     }
 }

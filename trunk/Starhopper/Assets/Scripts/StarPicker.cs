@@ -29,6 +29,7 @@ public class StarPicker : MonoBehaviour
         {
             OrbitCamera.DeactivateOrbit();
             GuiManager.HideStarFocus();
+            PlanetsWithStars.PickedStar = null;
         }
 
         if (Input.GetKeyDown(KeyCode.H) ||
@@ -55,6 +56,7 @@ public class StarPicker : MonoBehaviour
                 OrbitCamera.SetMode(CameraMode.Free);
                 OrbitCamera.OrbitLocation(closestStar);
                 GuiManager.SetStarFocus(closestStar);
+                PlanetsWithStars.PickedStar = closestStar;
             }
         }
     }

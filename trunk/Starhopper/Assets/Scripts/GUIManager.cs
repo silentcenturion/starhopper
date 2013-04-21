@@ -101,6 +101,26 @@ public class GUIManager : MonoBehaviour
         {
             OrbitCamera.SetMode(CameraMode.Free);
         }
+        if (OrbitCamera.CurrentCameraMode == CameraMode.Solar)
+        {
+            if (GUI.Button(new Rect(-15 + Screen.width - 130, 500 - _ToggleControlPanelHeigth, 130, 25), "Step Astroid"))
+            {
+                //Set AStroiud
+            }
+            if (GUI.Button(new Rect(-15 + Screen.width - 130, 530 - _ToggleControlPanelHeigth, 130, 25), "Top Diameter"))
+            {
+                AsteroidVoyeur.Instance.TopDiameter();
+            }
+            if (GUI.Button(new Rect(-15 + Screen.width - 130, 560 - _ToggleControlPanelHeigth, 130, 25), "Top Period"))
+            {
+                AsteroidVoyeur.Instance.TopPeriod();
+            }
+            if (GUI.Button(new Rect(-15 + Screen.width - 130, 590 - _ToggleControlPanelHeigth, 130, 25), "Top Eccentricity"))
+            {
+                AsteroidVoyeur.Instance.TopEccentricity();
+            }
+           
+        }
 
         //GUI.Label(new Rect(1000, 800, 100, 100), "Speed: " + Speed.ToString("N2"));
 
