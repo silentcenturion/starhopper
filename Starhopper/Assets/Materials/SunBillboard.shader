@@ -67,7 +67,7 @@ Properties {
 				
 				float3 sphereDirection2 = mul((float3x3)_Rotation, sphereDirection);
 				
-				float3 baseColor = pow(i.color.rgb, 7);
+				float3 baseColor = pow(i.color.rgb, 4);
 				float3 noise = texCUBE(_NoiseCube, sphereDirection).rgb;
 				float3 cloud = texCUBE(_CloudCube, sphereDirection).rgb;
 

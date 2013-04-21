@@ -15,7 +15,6 @@ public class StarPicker : MonoBehaviour
 
         OrbitCamera.OrbitLocation(Stars[0]);
         GuiManager.SetStarFocus(Stars[0]);
-        Sun.CreateSolarSystem(Stars[0]);
     }
 
     // Update is called once per frame
@@ -53,7 +52,6 @@ public class StarPicker : MonoBehaviour
             {
                 OrbitCamera.OrbitLocation(closestStar);
                 GuiManager.SetStarFocus(closestStar);
-                Sun.CreateSolarSystem(closestStar);
             }
         }
     }
