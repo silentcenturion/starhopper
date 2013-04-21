@@ -152,15 +152,78 @@ public class Sun : MonoBehaviour
 				meshFilter.sharedMesh = mesh;
 
 				sun.OriginalPos = new Vector3 (star.X, star.Y, star.Z);
-        
-				if (star.Planets != null && star.Planets.Count > 0) {
-						sun.CreatePlanets (star.Planets);
-				}
+
+                System.Collections.Generic.List<Exoplanet> planets = star.Planets;
+                if (star.GetName() == "Sol")
+                {
+                    planets = GetOurPlanets();
+                }
+
+                if (planets != null && planets.Count > 0)
+                {
+                    sun.CreatePlanets(planets);
+                }
+
+                //if (star.Planets != null && star.Planets.Count > 0) {
+                //        sun.CreatePlanets (star.Planets);
+                //}
 
 				sun.transform.localScale = Vector3.zero;
 
 				return sun;
 		}
+
+        static System.Collections.Generic.List<Exoplanet> GetOurPlanets()
+        {
+            System.Collections.Generic.List<Exoplanet> planets = new System.Collections.Generic.List<Exoplanet>();
+
+            Exoplanet merkurius = new Exoplanet();
+            Exoplanet venus = new Exoplanet();
+            Exoplanet earth = new Exoplanet();
+            Exoplanet mars = new Exoplanet();
+            Exoplanet jupiter = new Exoplanet();
+            Exoplanet saturnus = new Exoplanet();
+            Exoplanet uranus = new Exoplanet();
+            Exoplanet neptunus = new Exoplanet();
+
+            merkurius.PlanetaryRadius = 0.03413f;
+            venus.PlanetaryRadius = 0.084639f;
+            earth.PlanetaryRadius = 0.089213f;
+            mars.PlanetaryRadius = 0.047516f;
+            jupiter.PlanetaryRadius = 1f;
+            saturnus.PlanetaryRadius = 0.843003f;
+            uranus.PlanetaryRadius = 0.357509f;
+            neptunus.PlanetaryRadius = 0.346388f;
+
+            merkurius.SemiMajorAxis = 0.387098f;
+            venus.SemiMajorAxis = 0.723327f;
+            earth.SemiMajorAxis = 1f;
+            mars.SemiMajorAxis = 1.523679f;
+            jupiter.SemiMajorAxis = 5.204267f;
+            saturnus.SemiMajorAxis = 9.58201720f;
+            uranus.SemiMajorAxis = 19.22941195f;
+            neptunus.SemiMajorAxis = 30f;
+
+            merkurius.OrbitalPeriod = 39.264f;
+            venus.OrbitalPeriod = 224.7f;
+            earth.OrbitalPeriod = 365.2422f;
+            mars.OrbitalPeriod = 686.98f;
+            jupiter.OrbitalPeriod = 4331.77f;
+            saturnus.OrbitalPeriod = 10760f;
+            uranus.OrbitalPeriod = 30684f;
+            neptunus.OrbitalPeriod = 60188.3f;
+
+            planets.Add(merkurius);
+            planets.Add(venus);
+            planets.Add(earth);
+            planets.Add(mars);
+            planets.Add(jupiter);
+            planets.Add(saturnus);
+            planets.Add(uranus);
+            planets.Add(neptunus);
+
+            return planets;
+        }
     
 		static Mesh GenerateMesh (Color color)
 		{
