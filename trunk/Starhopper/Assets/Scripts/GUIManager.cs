@@ -65,7 +65,7 @@ public class GUIManager : MonoBehaviour
         IsMouseOverGui = rect.Contains(mousePos);
 
         //Universe Scale
-        Scaler.Scale = GUI.HorizontalSlider(new Rect(-15 + Screen.width - 130, 25 - _ToggleControlPanelHeigth, 130, 25), Scaler.Scale, 1.5f, 150);
+        Scaler.Scale = GUI.HorizontalSlider(new Rect(-15 + Screen.width - 130, 25 - _ToggleControlPanelHeigth, 130, 25), Scaler.Scale, 0.5f, 150);
         GUI.Label(new Rect(-15 + Screen.width - 130, 5 - _ToggleControlPanelHeigth, 130, 25), "Scale Universe");
 
         //Saturation
