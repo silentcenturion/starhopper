@@ -36,6 +36,9 @@ public class PlanetsWithStars : MonoBehaviour
             {
                 List<Exoplanet> planets = star.Planets;
 
+                if (guiManager.ShowOnlyWithPlanets() && star.Planets.Count == 0)
+                    continue;
+
                 Vector3 starPos = new Vector3(star.X, star.Y, star.Z) * Scaler.Scale;
                 float distance3D = Vector3.SqrMagnitude(camPos - starPos);
 
@@ -71,7 +74,7 @@ public class PlanetsWithStars : MonoBehaviour
             planetStyle.normal.textColor = new Color(255, 255, 255, 1 - (data.Distance / guiManager.GetPlanetFilter()));
 
             if (data.Star.Planets.Count > 0)
-                GUI.Label(new Rect(data.ScreenPos.x, data.ScreenPos.y, 200, 100), data.Star.GetName() + "(Planets: " + data.Star.Planets.Count + ")", planetStyle);
+                GUI.Label(new Rect(data.ScreenPos.x, data.ScreenPos.y, 200, 100), data.Star.GetName() + " (Planets: " + data.Star.Planets.Count + ")", planetStyle);
             else
                 GUI.Label(new Rect(data.ScreenPos.x, data.ScreenPos.y, 200, 100), data.Star.GetName(), planetStyle);
 
