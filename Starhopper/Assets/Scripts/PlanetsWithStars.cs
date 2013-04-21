@@ -54,7 +54,7 @@ public class PlanetsWithStars : MonoBehaviour
 
                 float planetFilter = guiManager.GetPlanetFilter();
                 if (guiManager.ShowOnlyWithPlanets())
-                    planetFilter *= 100;
+                    planetFilter *= 10;
 
                 if (distance3D < planetFilter * planetFilter * Scaler.Scale)
                 {
@@ -121,7 +121,7 @@ public class PlanetsWithStars : MonoBehaviour
     {
         float planetFilter = guiManager.GetPlanetFilter();
         if (guiManager.ShowOnlyWithPlanets())
-            planetFilter *= 100;
+            planetFilter *= 10;
 
         foreach (NameData data in _DataList)
         {
