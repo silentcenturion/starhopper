@@ -1,16 +1,12 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/StarMesh.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Sun.cs">
     <Files>
-      <File FileName="Assets/Scripts/StarMesh.cs" Line="92" Column="15" />
-      <File FileName="Assets/Scripts/LoadAsteroids.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Asteroid.cs" Line="22" Column="26" />
-      <File FileName="Assets/Scripts/AsteroidOrbit.cs" Line="23" Column="112" />
-      <File FileName="Assets/Scripts/Universe.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/PlanetsWithStars.cs" Line="21" Column="46" />
-      <File FileName="Assets/Scripts/GUIManager.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/StarPicker.cs" Line="19" Column="2" />
-      <File FileName="Assets/Scripts/AsteroidVoyeur.cs" Line="20" Column="27" />
+      <File FileName="Assets/Scripts/Sun.cs" Line="155" Column="45" />
+      <File FileName="Assets/Scripts/OrbitCamera.cs" Line="185" Column="1" />
+      <File FileName="Assets/Scripts/Orbit.cs" Line="158" Column="26" />
+      <File FileName="Assets/Scripts/LoadExoplanet.cs" Line="179" Column="57" />
+      <File FileName="Assets/Scripts/Exoplanet.cs" Line="25" Column="27" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

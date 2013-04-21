@@ -182,7 +182,7 @@ public class OrbitCamera : MonoBehaviour
             transform.rotation = Quaternion.Slerp(startRotation, rotation, Mathf.SmoothStep(0, 1, percent));
         }
 
-        GuiManager.Speed = Vector3.Distance(previousPos, transform.position) * (1 / Scaler.Scale);
+        GuiManager.Speed = Vector3.Distance(previousPos, transform.position) * (1 / Scaler.Scale); 
     }
 
     public void DeactivateOrbit()
