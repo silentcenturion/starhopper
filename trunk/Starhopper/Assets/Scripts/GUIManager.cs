@@ -17,9 +17,11 @@ public class GUIManager : MonoBehaviour
     string _Magnitude;
     string _Spectrum;
     string _ColorIndex;
-    bool _ShowNameplates;
+	string _LumClass;
+	string _StarColor;
+	bool _ShowNameplates;
+	string _InputText;
     bool _ShowOnlyWithPlanets = true;
-    string _InputText;
 
     public bool IsMouseOverGui;
 
@@ -168,18 +170,45 @@ public class GUIManager : MonoBehaviour
         GUIStyle informationStyle = new GUIStyle();
         informationStyle.fontSize = 20;
         informationStyle.normal.textColor = new Color(255, 255, 255, _HeaderAlpha);
-        GUI.Label(new Rect(15, Screen.height * 0.3f, 0, 25), "Distance:", informationStyle);
+		
+		float lightyears = float.Parse(_Distance) * 3.26163344f;
+		float yearsbycar = lightyears * 10738046 / 1000000;
+		
+		lightyears = (float)System.Math.Round(lightyears, 2);		
+		yearsbycar = (float)System.Math.Round(yearsbycar);
+		
+		string text = "";
+		
+		if(_FocusedStarName == "Sol"){
+			 text = "This is our Sun. It is " + _StarColor + _LumClass + ".";
+		}
+		else{
+			 text = _FocusedStarName + " is " + _StarColor + _LumClass + " located "
+			+ lightyears + " lightyears from the Sun. It would take " +
+			yearsbycar + " milion years to drive there by car.";
+		}
+		
+		GUI.Label(new Rect(15, Screen.height * 0.3f, 300, 250), text);
+		
+				/*
+        GUI.Label(new Rect(15, Screen.height * 0.3f, 0, 25), "Distance from Earth (in light years):", informationStyle);
         GUI.Label(new Rect(15, Screen.height * 0.3f + 30, 100, 25), "Magnitude:", informationStyle);
         GUI.Label(new Rect(15, Screen.height * 0.3f + 60, 100, 25), "Spectrum:", informationStyle);
         GUI.Label(new Rect(15, Screen.height * 0.3f + 90, 100, 25), "Color Index:", informationStyle);
+		GUI.Label(new Rect(15, Screen.height * 0.3f + 120, 100, 25), "Luminosity Class:", informationStyle);
+
+		
 
         informationStyle.normal.textColor = new Color(255, 0, 255, _HeaderAlpha);
-        GUI.Label(new Rect(150, Screen.height * 0.3f, 0, 25), _Distance, informationStyle);
+        GUI.Label(new Rect(150, Screen.height * 0.3f, 0, 25), (float.Parse(_Distance) * 3.26163344f).ToString(), informationStyle);
         GUI.Label(new Rect(150, Screen.height * 0.3f + 30, 100, 25), _Magnitude, informationStyle);
         GUI.Label(new Rect(150, Screen.height * 0.3f + 60, 100, 25), _Spectrum, informationStyle);
         GUI.Label(new Rect(150, Screen.height * 0.3f + 90, 100, 25), _ColorIndex, informationStyle);
-
-    }
+		GUI.Label(new Rect(150, Screen.height * 0.3f + 120, 100, 25), _LumClass, informationStyle);
+		
+		*/
+		
+		}
 
     public void HideStarFocus()
     {
@@ -209,5 +238,116 @@ public class GUIManager : MonoBehaviour
         _Magnitude = star.Mag.ToString();
         _Spectrum = star.Spectrum;
         _ColorIndex = star.ColorIndex.ToString();
+		_LumClass = GetStarClass(star);
+		_StarColor = GetStarColor(star);
+    }
+	
+	public static string GetStarClass(Star star)
+    {
+        if (star.Spectrum != null && star.Spectrum.Length > 0)
+        {
+			if(star.Spectrum.ToLower().Contains("vii"))
+			{
+				return "white dwarf";
+			}
+			else if(star.Spectrum.ToLower().Contains("iv")){
+				
+				return "subgiant";
+			}
+			else if(star.Spectrum.ToLower().Contains("vi")){
+				
+				return "sub dwarf";
+			}
+			
+			else if(star.Spectrum.ToLower().Contains("v")){
+				
+				return "main-sequence star (dwarf)";
+			}
+			else if(star.Spectrum.ToLower().Contains("iii")){
+				
+				return "giant";
+			}
+			
+			else if(star.Spectrum.ToLower().Contains("ii")){
+				
+				return "bright giant";
+			}
+			
+			else if(star.Spectrum.ToLower().Contains("ia-0")){
+				
+				return "hypergiant";
+			}
+			
+			else if(star.Spectrum.ToLower().Contains("i")){
+				
+				return "supergiant";
+			}
+			
+			
+			else if(star.Spectrum.ToLower().Contains("d")){
+				
+				return "white dwarf";
+			}	
+        }
+			
+		return "star";
+	}
+			
+	public static string GetStarColor(Star star)
+    {
+		
+		if (star.Spectrum != null && star.Spectrum.Length > 0)
+		{
+			string star2 = char.ToLowerInvariant(star.Spectrum[0]).ToString();	      
+        
+			if(star2 == "o")
+			{
+				return "a blue ";
+			}
+			else if(star2 == "b"){
+				
+				return "a blue white ";
+			}
+			else if(star2 == "a"){
+				
+				return "a white ";
+			}
+			
+			else if(star2 == "f"){
+				
+				return "a yellow white ";
+			}
+			else if(star2 == "g"){
+				
+				return "a yellow ";
+			}
+			
+			else if(star2 == "k"){
+				
+				return "an orange ";
+			}
+			
+			else if(star2 == "m"){
+				
+				return "a red ";
+			}	
+					
+			else if(star2 == "l"){
+				
+				return "a red brown ";
+			}
+					
+			else if(star2 == "t"){
+				
+				return "a brown ";
+			}
+					
+			else if(star2 == "y"){
+				
+				return "a dark brown ";
+			}
+        }
+			
+        return "a ";
     }
 }
