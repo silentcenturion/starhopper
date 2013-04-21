@@ -9,6 +9,7 @@ public class OrbitCamera : MonoBehaviour
     private Vector3 startPosition;
     private Vector3 targetPosition;
 
+    private float savedScale = 100f;
     private float startScale;
     private float targetScale;
 
@@ -27,6 +28,7 @@ public class OrbitCamera : MonoBehaviour
     private float translationSpeed;
 
     public bool orbitActive;
+    public CameraMode CurrentCameraMode;
 
     public float xSpeed = 120.0f;
     public float ySpeed = 120.0f;
@@ -59,6 +61,9 @@ public class OrbitCamera : MonoBehaviour
 
         if (Input.GetKey(KeyCode.KeypadMinus))
             Scaler.Scale -= 0.1f;
+
+        if (CurrentCameraMode == CameraMode.Free)
+            savedScale = Scaler.Scale;
 
         if (Input.GetKey(KeyCode.Mouse1))
         {
@@ -197,6 +202,7 @@ public class OrbitCamera : MonoBehaviour
         GuiManager.HideStarFocus();
         currentTravelTime = 0;
         targetTravelTime = 5f;
+        CurrentCameraMode = mode;
 
         switch (mode)
         {
@@ -204,6 +210,7 @@ public class OrbitCamera : MonoBehaviour
                 zoomDistanceMax = 5000f;
                 zoomSpeed = 5000f;
                 currentZoom = 3000f;
+                savedScale = Scaler.Scale;
                 startScale = Scaler.Scale;
                 targetScale = 3f;
                 translationSpeed = 1f;
@@ -212,6 +219,7 @@ public class OrbitCamera : MonoBehaviour
                 zoomDistanceMax = 200f;
                 zoomSpeed = 5f;
                 currentZoom = 3.5f;
+                savedScale = Scaler.Scale;
                 startScale = Scaler.Scale;
                 targetScale = 100f;
                 translationSpeed = 0.01f;
@@ -221,7 +229,7 @@ public class OrbitCamera : MonoBehaviour
                 zoomSpeed = 5f;
                 currentZoom = 3.5f;
                 startScale = Scaler.Scale;
-                targetScale = 100f;
+                targetScale = savedScale;
                 translationSpeed = 0.01f;
                 break;
             default:
