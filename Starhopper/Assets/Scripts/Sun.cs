@@ -102,12 +102,15 @@ public class Sun : MonoBehaviour
             planetParent.transform.localPosition = Vector3.zero;
             go.transform.parent = planetParent.transform;
 
-            Debug.Log(planet.SemiMajorAxis);
+            Debug.Log(planet.PlanetaryRadius);
 
 
             planetParent.transform.localRotation = Quaternion.Euler(0, Random.Range(0, 360), 0);
-            go.transform.localPosition = new Vector3(planet.PlanetaryRadius, 0, 0);
-            go.transform.localScale = Vector3.one * 1;
+            go.transform.localPosition = new Vector3(planet.SemiMajorAxis, 0, 0);
+            if (planet.PlanetaryRadius == 0)
+                go.transform.localScale = Vector3.one * 0.1f;
+            else
+                go.transform.localScale = Vector3.one * 0.1f * planet.PlanetaryRadius;
 
             _Planets[i] = go.transform;
         }
