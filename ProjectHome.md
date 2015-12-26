@@ -1,0 +1,1 @@
+Explore our universe in this intuitive app created for both young and old. Soar through the star-filled void towards stars, asteroids, planets and all that our galaxy has to offer. Learn all about specific celestial bodies, search for those you want to see and we will take you there. Through Starhopper you will travel through space and time!
